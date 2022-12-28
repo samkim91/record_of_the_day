@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'firebase_options.dart';
+import 'src/injector.dart';
 import 'src/presentation/blocs/auth/auth_bloc.dart';
 import 'src/presentation/views/auth_view.dart';
 import 'src/presentation/views/main_view.dart';
@@ -13,6 +14,7 @@ Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  await initializeDependencies();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FlutterNativeSplash.remove();
@@ -37,11 +39,8 @@ class MyApp extends StatelessWidget {
             home = const AuthView();
           }
 
-          return MultiBlocProvider(
-            providers: [BlocProvider(create: (_) => AuthBloc())],
-            child: MaterialApp(
-                home: home, theme: ThemeData(), darkTheme: ThemeData.dark()),
-          );
+          return MaterialApp(
+              home: home, theme: ThemeData(), darkTheme: ThemeData.dark());
         });
   }
 }
