@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "890255899975",
+    "project_id": "waytofit-32c87",
+    "storage_bucket": "waytofit-32c87.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890255899975:android:d6a0acef9885bd7ed16062",
+        "android_client_info": {
+          "package_name": "com.waytofit.way_to_fit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "890255899975-kf16dcahk5rvr3vilmqm9bfdfivahobu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeMkdorBYIMVs6iV-nK7YtBIfuTdBPbQ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "890255899975-kf16dcahk5rvr3vilmqm9bfdfivahobu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "890255899975-75m93bhueagv6baog36s2jo7mqnc33ef.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.recordOfTheDay"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
