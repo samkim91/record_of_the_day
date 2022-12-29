@@ -7,8 +7,12 @@ abstract class AuthEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class SendSignInEmail extends AuthEvent {
+class EmailChanged extends AuthEvent {
   final String email;
 
-  const SendSignInEmail(this.email);
+  const EmailChanged(this.email);
+}
+
+class SendSignInEmail extends AuthEvent {
+  const SendSignInEmail();
 }

@@ -31,27 +31,28 @@ class AuthView extends StatelessWidget {
   Widget _logoSection() {
     return ConstrainedBox(
         constraints: const BoxConstraints(
-            maxHeight: 200,
-            minHeight: 100,
-            maxWidth: 200,
-            minWidth: 100),
-        child:
-        const Image(image: AssetImage('assets/images/logo.png')));
+            maxHeight: 200, minHeight: 100, maxWidth: 200, minWidth: 100),
+        child: const Image(image: AssetImage('assets/images/logo.png')));
   }
 
   Widget _emailSection() {
+    AuthBloc authBloc = injector.get<AuthBloc>();
 
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Flexible(
+            Flexible(
               child: TextField(
                 maxLines: 1,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: 'e-mail'),
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'e-mail'),
+                onChanged: (value) {
+                  authBloc.add(EmailChanged(value));
+                },
               ),
             ),
             const SizedBox(
@@ -61,16 +62,12 @@ class AuthView extends StatelessWidget {
               child: SizedBox(
                   height: 50,
                   child: OutlinedButton(
-                      onPressed: () => _onPressAuthButton(context, state),
+                      onPressed: () => authBloc.add(const SendSignInEmail()),
                       child: const Text('인증'))),
             ),
           ],
         );
       },
     );
-  }
-
-  void _onPressAuthButton(BuildContext context, AuthState state) {
-    BlocProvider.of<AuthBloc>(context).add(SendSignInEmail(state.email));
   }
 }

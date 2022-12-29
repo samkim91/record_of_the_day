@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "890255899975-3adrerq79b6jhs5t37pmr48sbakg3215.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.waytofit.way_to_fit",
+            "certificate_hash": "7db49715709d59a7f968a1087afcb0c450dd783c"
+          }
+        },
+        {
           "client_id": "890255899975-kf16dcahk5rvr3vilmqm9bfdfivahobu.apps.googleusercontent.com",
           "client_type": 3
         }

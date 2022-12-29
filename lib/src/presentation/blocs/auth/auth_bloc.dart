@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:way_to_fit/src/core/config/logger.dart';
 
@@ -11,19 +12,31 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
 
-  AuthBloc(this._authRepository) : super(const AuthInitial()) {
-    on<AuthEvent>((event, emit) async {
-      await mapEventToState(event, emit);
-    });
+  AuthBloc(this._authRepository) : super(const AuthState()) {
+    on<EmailChanged>(_emailChanged);
+    on<SendSignInEmail>(_sendSignInEmail);
+
   }
 
-  Future mapEventToState(AuthEvent event, Emitter<AuthState> emit) async {
-    if (event is SendSignInEmail) await _sendSignInEmail(event.email);
+  void _emailChanged(EmailChanged event, Emitter<AuthState> emit) {
+    final email = event.email;
+    logger.d('_emailChanged: $email');
+
+    emit(state.copyWith(email: email));
+
+    state;
   }
 
-  Future<void> _sendSignInEmail(String email) async {
-    logger.d('_sendSignInEmail: ');
-    _authRepository.sendSignInEmail(email);
-    
+  void _sendSignInEmail(SendSignInEmail event, Emitter<AuthState> emit) async {
+    logger.d('_sendSignInEmail: ${state.email}');
+
+    emit(state.copyWith(status: AuthStatus.processing));
+
+    try {
+      await _authRepository.sendSignInEmail(state.email);
+      emit(state.copyWith(status: AuthStatus.success));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.failed, error: e.toString()));
+    }
   }
 }
