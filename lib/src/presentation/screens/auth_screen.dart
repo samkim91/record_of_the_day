@@ -5,8 +5,8 @@ import 'package:way_to_fit/src/presentation/blocs/auth/auth_bloc.dart';
 
 import '../../injector.dart';
 
-class AuthView extends StatelessWidget {
-  const AuthView({Key? key}) : super(key: key);
+class AuthScreen extends StatelessWidget {
+  const AuthScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -5,8 +5,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'firebase_options.dart';
 import 'src/injector.dart';
-import 'src/presentation/views/auth_view.dart';
-import 'src/presentation/views/main_view.dart';
+import 'src/presentation/screens/auth_screen.dart';
+import 'src/presentation/screens/main_screen.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -32,9 +32,9 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             User user = snapshot.data;
-            home = const MainView();
+            home = const MainScreen();
           } else {
-            home = const AuthView();
+            home = const AuthScreen();
           }
 
           return MaterialApp(
