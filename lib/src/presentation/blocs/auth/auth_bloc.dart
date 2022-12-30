@@ -15,7 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this._authRepository) : super(const AuthState()) {
     on<EmailChanged>(_emailChanged);
     on<SendSignInEmail>(_sendSignInEmail);
-
+    on<ClickGoogleSignIn>(_clickGoogleSignIn);
   }
 
   void _emailChanged(EmailChanged event, Emitter<AuthState> emit) {
@@ -23,8 +23,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     logger.d('_emailChanged: $email');
 
     emit(state.copyWith(email: email));
-
-    state;
   }
 
   void _sendSignInEmail(SendSignInEmail event, Emitter<AuthState> emit) async {
@@ -36,6 +34,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _authRepository.sendSignInEmail(state.email);
       emit(state.copyWith(status: AuthStatus.success));
     } catch (e) {
+      emit(state.copyWith(status: AuthStatus.failed, error: e.toString()));
+    }
+  }
+
+  FutureOr<void> _clickGoogleSignIn(ClickGoogleSignIn event, Emitter<AuthState> emit) async {
+    logger.d('_clickGoogleSignIn: ');
+
+    emit(state.copyWith(status: AuthStatus.processing));
+
+    try {
+      await _authRepository.signInWithGoogle();
+      emit(state.copyWith(status: AuthStatus.success));
+    }catch(e) {
       emit(state.copyWith(status: AuthStatus.failed, error: e.toString()));
     }
   }

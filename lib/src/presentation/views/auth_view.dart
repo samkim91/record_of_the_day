@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:way_to_fit/src/presentation/blocs/auth/auth_bloc.dart';
 
 import '../../injector.dart';
@@ -22,7 +23,9 @@ class AuthView extends StatelessWidget {
         children: [
           _logoSection(),
           const SizedBox(height: 100),
-          _emailSection(),
+          _signInActionsSection(),
+          const SizedBox(height: 50),
+          _googleSection(),
         ],
       ),
     );
@@ -35,7 +38,7 @@ class AuthView extends StatelessWidget {
         child: const Image(image: AssetImage('assets/images/logo.png')));
   }
 
-  Widget _emailSection() {
+  Widget _signInActionsSection() {
     AuthBloc authBloc = injector.get<AuthBloc>();
 
     return BlocBuilder<AuthBloc, AuthState>(
@@ -48,8 +51,7 @@ class AuthView extends StatelessWidget {
                 maxLines: 1,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'e-mail'),
+                    border: OutlineInputBorder(), labelText: 'e-mail'),
                 onChanged: (value) {
                   authBloc.add(EmailChanged(value));
                 },
@@ -69,5 +71,20 @@ class AuthView extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget _googleSection() {
+    AuthBloc authBloc = injector.get<AuthBloc>();
+
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      return SizedBox(
+        height: 50,
+        width: 200,
+        child: IconButton(
+          onPressed: () => authBloc.add(const ClickGoogleSignIn()),
+          icon: SvgPicture.asset('assets/images/signInWithGoogle.svg'),
+        ),
+      );
+    });
   }
 }

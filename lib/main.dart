@@ -1,12 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'firebase_options.dart';
 import 'src/injector.dart';
-import 'src/presentation/blocs/auth/auth_bloc.dart';
 import 'src/presentation/views/auth_view.dart';
 import 'src/presentation/views/main_view.dart';
 

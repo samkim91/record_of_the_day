@@ -16,3 +16,7 @@ class EmailChanged extends AuthEvent {
 class SendSignInEmail extends AuthEvent {
   const SendSignInEmail();
 }
+
+class ClickGoogleSignIn extends AuthEvent {
+  const ClickGoogleSignIn();
+}
