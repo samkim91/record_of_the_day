@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
             User user = snapshot.data;
             home = const MainScreen();
           } else {
-            home = const AuthScreen();
+            home = const MainScreen();
           }
 
           return MaterialApp(

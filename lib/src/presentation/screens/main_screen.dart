@@ -15,12 +15,16 @@ class MainScreen extends StatelessWidget {
     return BlocProvider(
         create: (_) => injector.get<NavigationCubit>(),
         child: Scaffold(
-            body: _buildBody(),
-            bottomNavigationBar: _buildBottomNavigationBar()));
+          body: _buildBody(),
+          bottomNavigationBar: _buildBottomNavigationBar(),
+          floatingActionButton: _buildFloatingActionButton(),
+        )
+    );
   }
 
   Widget _buildBody() {
-    return BlocBuilder<NavigationCubit, NavigationState>(builder: (context, state) {
+    return BlocBuilder<NavigationCubit, NavigationState>(
+        builder: (context, state) {
       if (state.navigationBarItem == NavigationBarItem.wod) {
         return const WodScreen();
       } else if (state.navigationBarItem == NavigationBarItem.rm) {
@@ -30,22 +34,42 @@ class MainScreen extends StatelessWidget {
       }
       // TODO : error page
       return Container();
-    }
-    );
+    });
+  }
+
+  Widget _buildFloatingActionButton() {
+    return BlocBuilder<NavigationCubit, NavigationState>(
+        builder: (context, state) {
+      if (state.navigationBarItem == NavigationBarItem.wod) {
+        return FloatingActionButton(
+            child: const Icon(Icons.add), onPressed: () => {});
+      } else if (state.navigationBarItem == NavigationBarItem.rm) {
+        return FloatingActionButton(
+            child: const Icon(Icons.add), onPressed: () => {});
+      }
+      return Container();
+    });
   }
 
   Widget _buildBottomNavigationBar() {
     NavigationCubit navigationCubit = injector.get<NavigationCubit>();
 
-    return BlocBuilder<NavigationCubit, NavigationState>(builder: (context, state) {
+    return BlocBuilder<NavigationCubit, NavigationState>(
+        builder: (context, state) {
       return BottomNavigationBar(
         currentIndex: state.index,
-          showUnselectedLabels: false,
-          items: [
-            BottomNavigationBarItem(icon: Icon(NavigationBarItem.wod.icon), label:NavigationBarItem.wod.label),
-            BottomNavigationBarItem(icon: Icon(NavigationBarItem.rm.icon), label:NavigationBarItem.rm.label),
-            BottomNavigationBarItem(icon: Icon(NavigationBarItem.profile.icon), label:NavigationBarItem.profile.label),
-          ],
+        showUnselectedLabels: false,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(NavigationBarItem.wod.icon),
+              label: NavigationBarItem.wod.label),
+          BottomNavigationBarItem(
+              icon: Icon(NavigationBarItem.rm.icon),
+              label: NavigationBarItem.rm.label),
+          BottomNavigationBarItem(
+              icon: Icon(NavigationBarItem.profile.icon),
+              label: NavigationBarItem.profile.label),
+        ],
         onTap: (index) {
           if (index == 0) {
             navigationCubit.getNavigationBarItem(NavigationBarItem.wod);
