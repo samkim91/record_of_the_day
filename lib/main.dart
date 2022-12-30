@@ -5,7 +5,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'firebase_options.dart';
 import 'src/injector.dart';
-import 'src/presentation/screens/auth_screen.dart';
 import 'src/presentation/screens/main_screen.dart';
 
 Future<void> main() async {
@@ -38,7 +37,10 @@ class MyApp extends StatelessWidget {
           }
 
           return MaterialApp(
-              home: home, theme: ThemeData(), darkTheme: ThemeData.dark());
+              home: home,
+              theme: ThemeData(
+                  useMaterial3: true, splashFactory: NoSplash.splashFactory),
+              darkTheme: ThemeData.dark());
         });
   }
 }

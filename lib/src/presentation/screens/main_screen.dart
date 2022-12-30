@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:way_to_fit/src/core/Navigation.dart';
 import 'package:way_to_fit/src/injector.dart';
 import 'package:way_to_fit/src/presentation/blocs/navigation/navigation_cubit.dart';
-import 'package:way_to_fit/src/presentation/screens/profile_screen.dart';
-import 'package:way_to_fit/src/presentation/screens/rm_screen.dart';
-import 'package:way_to_fit/src/presentation/screens/wod_screen.dart';
+import 'package:way_to_fit/src/presentation/screens/profile/profile_screen.dart';
+import 'package:way_to_fit/src/presentation/screens/rm/rm_screen.dart';
+import 'package:way_to_fit/src/presentation/screens/wod/wod_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -18,8 +18,7 @@ class MainScreen extends StatelessWidget {
           body: _buildBody(),
           bottomNavigationBar: _buildBottomNavigationBar(),
           floatingActionButton: _buildFloatingActionButton(),
-        )
-    );
+        ));
   }
 
   Widget _buildBody() {
@@ -56,21 +55,11 @@ class MainScreen extends StatelessWidget {
 
     return BlocBuilder<NavigationCubit, NavigationState>(
         builder: (context, state) {
-      return BottomNavigationBar(
-        currentIndex: state.index,
-        showUnselectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(NavigationBarItem.wod.icon),
-              label: NavigationBarItem.wod.label),
-          BottomNavigationBarItem(
-              icon: Icon(NavigationBarItem.rm.icon),
-              label: NavigationBarItem.rm.label),
-          BottomNavigationBarItem(
-              icon: Icon(NavigationBarItem.profile.icon),
-              label: NavigationBarItem.profile.label),
-        ],
-        onTap: (index) {
+      return NavigationBar(
+        selectedIndex: state.index,
+        height: 70,
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        onDestinationSelected: (int index) {
           if (index == 0) {
             navigationCubit.getNavigationBarItem(NavigationBarItem.wod);
           } else if (index == 1) {
@@ -79,6 +68,17 @@ class MainScreen extends StatelessWidget {
             navigationCubit.getNavigationBarItem(NavigationBarItem.profile);
           }
         },
+        destinations: [
+          NavigationDestination(
+              icon: Icon(NavigationBarItem.wod.icon),
+              label: NavigationBarItem.wod.label),
+          NavigationDestination(
+              icon: Icon(NavigationBarItem.rm.icon),
+              label: NavigationBarItem.rm.label),
+          NavigationDestination(
+              icon: Icon(NavigationBarItem.profile.icon),
+              label: NavigationBarItem.profile.label),
+        ],
       );
     });
   }
