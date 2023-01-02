@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:way_to_fit/src/core/Navigation.dart';
+import 'package:way_to_fit/src/presentation/screens/navigation.dart';
 import 'package:way_to_fit/src/injector.dart';
 import 'package:way_to_fit/src/presentation/blocs/navigation/navigation_cubit.dart';
 import 'package:way_to_fit/src/presentation/screens/profile/profile_screen.dart';
 import 'package:way_to_fit/src/presentation/screens/rm/rm_screen.dart';
+import 'package:way_to_fit/src/presentation/screens/wod/wod_create_screen.dart';
 import 'package:way_to_fit/src/presentation/screens/wod/wod_screen.dart';
 
 class MainScreen extends StatelessWidget {
@@ -41,7 +42,9 @@ class MainScreen extends StatelessWidget {
         builder: (context, state) {
       if (state.navigationBarItem == NavigationBarItem.wod) {
         return FloatingActionButton(
-            child: const Icon(Icons.add), onPressed: () => {});
+            child: const Icon(Icons.add), onPressed: () => {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const WodCreateScreen()))
+        });
       } else if (state.navigationBarItem == NavigationBarItem.rm) {
         return FloatingActionButton(
             child: const Icon(Icons.add), onPressed: () => {});
@@ -56,15 +59,15 @@ class MainScreen extends StatelessWidget {
     return BlocBuilder<NavigationCubit, NavigationState>(
         builder: (context, state) {
       return NavigationBar(
-        selectedIndex: state.index,
+        selectedIndex: state.navigationBarItem.index,
         height: 70,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         onDestinationSelected: (int index) {
-          if (index == 0) {
+          if (index == NavigationBarItem.wod.index) {
             navigationCubit.getNavigationBarItem(NavigationBarItem.wod);
-          } else if (index == 1) {
+          } else if (index == NavigationBarItem.rm.index) {
             navigationCubit.getNavigationBarItem(NavigationBarItem.rm);
-          } else if (index == 2) {
+          } else if (index == NavigationBarItem.profile.index) {
             navigationCubit.getNavigationBarItem(NavigationBarItem.profile);
           }
         },

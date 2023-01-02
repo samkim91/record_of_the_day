@@ -38,7 +38,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  FutureOr<void> _clickGoogleSignIn(ClickGoogleSignIn event, Emitter<AuthState> emit) async {
+  void _clickGoogleSignIn(ClickGoogleSignIn event, Emitter<AuthState> emit) async {
     logger.d('_clickGoogleSignIn: ');
 
     emit(state.copyWith(status: AuthStatus.processing));
