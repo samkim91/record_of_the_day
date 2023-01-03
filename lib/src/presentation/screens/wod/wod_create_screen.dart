@@ -1,14 +1,11 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:way_to_fit/src/domain/entities/participation_type.dart';
 import 'package:way_to_fit/src/domain/entities/wod_type.dart';
 import 'package:way_to_fit/src/injector.dart';
 import 'package:way_to_fit/src/presentation/blocs/wod_create/wod_create_bloc.dart';
-
-import '../../../core/config/logger.dart';
 
 class WodCreateScreen extends StatelessWidget {
   const WodCreateScreen({Key? key}) : super(key: key);
@@ -17,11 +14,11 @@ class WodCreateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => injector.get<WodCreateBloc>(),
-      child: Scaffold(appBar: AppBar(), body: _buildBody(context)),
+      child: Scaffold(appBar: AppBar(), body: _buildBody()),
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody() {
     return Container(
       margin: const EdgeInsets.only(left: 20.0, right: 20.0),
       child: SingleChildScrollView(
@@ -36,9 +33,11 @@ class WodCreateScreen extends StatelessWidget {
             const SizedBox(height: 20),
             _buildParticipationTypeSection(),
             const SizedBox(height: 20),
+            const Text('Movements'),
+            const SizedBox(height: 10),
             _buildWodDetailsSection(),
             const SizedBox(height: 10),
-            _buildWodDetailAddSection(context),
+            _buildWodDetailAddSection(),
             const SizedBox(height: 20),
           ],
         ),
@@ -53,7 +52,7 @@ class WodCreateScreen extends StatelessWidget {
           value: state.wodType,
           items: WodType.values.map((WodType value) {
             return DropdownMenuItem<WodType>(
-                value: value, child: Text(value.text));
+                value: value, child: Center(child: Text(value.text)));
           }).toList(),
           onChanged: (WodType? value) {
             BlocProvider.of<WodCreateBloc>(context).add(SelectWodType(value!));
@@ -65,10 +64,31 @@ class WodCreateScreen extends StatelessWidget {
   }
 
   Widget _buildWodTypeSubSection() {
-    return const TextField(
-      maxLines: 1,
-      decoration: InputDecoration(
-          border: OutlineInputBorder(), labelText: 'Time / Rounds / Etc'),
+    TextEditingController textEditingController = TextEditingController();
+
+    return BlocBuilder<WodCreateBloc, WodCreateState>(
+      builder: (context, state) {
+        return TextField(
+          controller: textEditingController,
+          onChanged: (value) {
+            BlocProvider.of<WodCreateBloc>(context).add(TypeWodTypeSub(value));
+          },
+          maxLines: 1,
+          decoration: InputDecoration(
+              suffixIcon: state.wodTypeSub.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        BlocProvider.of<WodCreateBloc>(context)
+                            .add(const TypeWodTypeSub(''));
+                        textEditingController.clear();
+                      },
+                    )
+                  : null,
+              border: const OutlineInputBorder(),
+              labelText: 'Time / Rounds / Etc'),
+        );
+      },
     );
   }
 
@@ -82,24 +102,40 @@ class WodCreateScreen extends StatelessWidget {
                   .map((ParticipationType participationType) {
                 return participationType == state.participationType;
               }).toList(),
+              constraints: const BoxConstraints.expand(height: 60, width: 80),
               borderRadius: const BorderRadius.all(Radius.circular(8)),
               onPressed: (int index) {
-                logger.d('toggle selected: $index');
+                BlocProvider.of<WodCreateBloc>(context).add(
+                    SelectParticipationType(ParticipationType.values[index]));
               },
-              constraints: const BoxConstraints.expand(width: 80, height: 60),
               children: ParticipationType.values
                   .map((ParticipationType participationType) {
                 return Text(participationType.text);
               }).toList(),
             ),
-            const SizedBox(width: 10),
-            const Expanded(
-              child: TextField(
-                maxLines: 1,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: 'Members'),
-              ),
-            )
+            state.participationType == ParticipationType.individual
+                ? Container()
+                : const SizedBox(width: 10),
+            // const SizedBox(width: 10),
+            state.participationType == ParticipationType.individual
+                ? Container()
+                : Expanded(
+                    child: TextField(
+                      maxLines: 1,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), labelText: 'Members'),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(4)
+                      ],
+                      onChanged: (value) {
+                        BlocProvider.of<WodCreateBloc>(context).add(
+                            TypeMemberCount(
+                                value.isNotEmpty ? int.parse(value) : 0));
+                      },
+                    ),
+                  )
           ],
         );
       },
@@ -107,71 +143,87 @@ class WodCreateScreen extends StatelessWidget {
   }
 
   Widget _buildWodDetailsSection() {
-    return Wrap(
-      runSpacing: 4,
-      children: [
-        InputChip(
-          padding: const EdgeInsets.all(7),
-          label: const Center(child: Text('data 1')),
-          avatar: const CircleAvatar(
-            child: Text('1'),
-          ),
-          onDeleted: () {},
-        ),
-        InputChip(
-          padding: const EdgeInsets.all(7),
-          label: const Center(child: Text('data 2')),
-          avatar: const CircleAvatar(
-            child: Text('2'),
-          ),
-          onDeleted: () {},
-        ),
-        InputChip(
-          padding: const EdgeInsets.all(7),
-          label: const Center(child: Text('data 3')),
-          avatar: const CircleAvatar(
-            child: Text('3'),
-          ),
-          onDeleted: () {},
-        ),
-      ],
-    );
-  }
+    return BlocBuilder<WodCreateBloc, WodCreateState>(
+      builder: (context, state) {
+        final ColorScheme colors = Theme.of(context).colorScheme;
 
-  Widget _buildWodDetailAddSection(BuildContext context) {
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(
-        minimumSize: const Size.fromHeight(40),
-      ),
-      onPressed: () => _showWodDetailAddDialog(context),
-      icon: const Icon(Icons.add),
-      label: const Text('추가하기'),
-    );
-  }
-
-  void _showWodDetailAddDialog(BuildContext context) {
-    showDialog(context: context, builder: (context) =>
-        CupertinoAlertDialog(
-          title: const Text('동작을 입력하세요'),
-          content: Column(
-            children: const [
-              SizedBox(height: 10),
-              CupertinoTextField(
-                placeholder: 'ex) 15 power snatch, 95lbs',
-                clearButtonMode: OverlayVisibilityMode.editing,
-                autofocus: true,
-                padding: EdgeInsets.all(10),
-                // decoration:
-                //     InputDecoration(border: OutlineInputBorder(), labelText: 'action'),
+        return Wrap(
+          children: state.wodDetails.asMap().entries.map((entry) {
+            return InputChip(
+              // padding: const EdgeInsets.all(7),
+              label: Center(child: Text(entry.value)),
+              avatar: CircleAvatar(
+                foregroundColor: colors.onPrimary,
+                backgroundColor: colors.primary,
+                child: Text(
+                  (entry.key + 1).toString(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(color: colors.onPrimary),
+                ),
               ),
-            ],
-          ),
-          actions: [
-            CupertinoDialogAction(onPressed: () {
-              Navigator.of(context).pop();
-            }, child: const Text('취소')),
-            CupertinoDialogAction(onPressed: () {}, child: const Text('저장')),
+              onDeleted: () {
+                BlocProvider.of<WodCreateBloc>(context)
+                    .add(ClickDeleteWodDetail(entry.key));
+              },
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildWodDetailAddSection() {
+    TextEditingController textEditingController = TextEditingController();
+
+    return BlocBuilder<WodCreateBloc, WodCreateState>(
+      builder: (context, state) {
+        final ColorScheme colors = Theme.of(context).colorScheme;
+
+        return Row(
+          children: [
+            Flexible(
+              child: TextField(
+                controller: textEditingController,
+                onChanged: (value) {
+                  BlocProvider.of<WodCreateBloc>(context)
+                      .add(TypeWodDetail(value));
+                },
+                maxLines: 1,
+                decoration: InputDecoration(
+                    suffixIcon: state.wodDetail.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              BlocProvider.of<WodCreateBloc>(context)
+                                  .add(const TypeWodDetail(''));
+                              textEditingController.clear();
+                            },
+                          )
+                        : null,
+                    border: const OutlineInputBorder(),
+                    labelText: 'ex) 15 power snatch, 95lbs'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            IconButton(
+              onPressed: () {
+                BlocProvider.of<WodCreateBloc>(context)
+                    .add(AddWodDetail(state.wodDetail));
+                BlocProvider.of<WodCreateBloc>(context)
+                    .add(const TypeWodDetail(''));
+                textEditingController.clear();
+              },
+              icon: const Icon(Icons.add),
+              style: IconButton.styleFrom(
+                foregroundColor: colors.onPrimary,
+                backgroundColor: colors.primary,
+              ),
+            ),
           ],
-        ));
+        );
+      },
+    );
   }
 }

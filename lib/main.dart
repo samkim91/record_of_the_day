@@ -39,7 +39,10 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
               home: home,
               theme: ThemeData(
-                  useMaterial3: true, splashFactory: NoSplash.splashFactory),
+                  colorSchemeSeed: const Color(0xff6750a4),
+                  // primarySwatch: primaryBlack,
+                  useMaterial3: true,
+                  splashFactory: NoSplash.splashFactory),
               darkTheme: ThemeData.dark());
         });
   }

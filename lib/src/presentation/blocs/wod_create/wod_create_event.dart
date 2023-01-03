@@ -17,27 +17,57 @@ class SelectWodType extends WodCreateEvent {
 }
 
 class TypeWodTypeSub extends WodCreateEvent {
-  const TypeWodTypeSub();
+  final String wodTypeSub;
+
+  const TypeWodTypeSub(this.wodTypeSub);
+
+  @override
+  List<Object> get props => [wodTypeSub];
 }
 
 class SelectParticipationType extends WodCreateEvent {
   final ParticipationType participationType;
 
   const SelectParticipationType(this.participationType);
+
+  @override
+  List<Object> get props => [participationType];
 }
 
 class TypeMemberCount extends WodCreateEvent {
-  const TypeMemberCount();
+  final int memberCount;
+
+  const TypeMemberCount(this.memberCount);
+
+  @override
+  List<Object> get props => [memberCount];
 }
 
-class ClickAddWodDetail extends WodCreateEvent {
-  // todo detail 추가
+class TypeWodDetail extends WodCreateEvent {
+  final String wodDetail;
 
-  const ClickAddWodDetail();
+  const TypeWodDetail(this.wodDetail);
+
+  @override
+  List<Object> get props => [wodDetail];
+}
+
+class AddWodDetail extends WodCreateEvent {
+  final String wodDetail;
+
+  const AddWodDetail(this.wodDetail);
+
+  @override
+  List<Object> get props => [wodDetail];
 }
 
 class ClickDeleteWodDetail extends WodCreateEvent {
-  const ClickDeleteWodDetail();
+  final int index;
+
+  const ClickDeleteWodDetail(this.index);
+
+  @override
+  List<Object> get props => [index];
 }
 
 class CreateWod extends WodCreateEvent {
