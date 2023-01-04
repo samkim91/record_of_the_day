@@ -70,6 +70,6 @@ class ClickDeleteWodDetail extends WodCreateEvent {
   List<Object> get props => [index];
 }
 
-class CreateWod extends WodCreateEvent {
-  const CreateWod();
+class SaveWod extends WodCreateEvent {
+  const SaveWod();
 }

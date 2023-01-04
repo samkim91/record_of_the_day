@@ -14,8 +14,27 @@ class WodCreateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => injector.get<WodCreateBloc>(),
-      child: Scaffold(appBar: AppBar(), body: _buildBody()),
+      child: Scaffold(
+          appBar: AppBar(
+            actions: _buildAppBarActions(),
+          ),
+          body: _buildBody()),
     );
+  }
+
+  List<Widget> _buildAppBarActions() {
+    return [
+      BlocBuilder<WodCreateBloc, WodCreateState>(
+        builder: (context, state) {
+          return TextButton(
+            onPressed: () {
+              BlocProvider.of<WodCreateBloc>(context).add(const SaveWod());
+            },
+            child: const Text("Save"),
+          );
+        },
+      )
+    ];
   }
 
   Widget _buildBody() {
@@ -33,7 +52,7 @@ class WodCreateScreen extends StatelessWidget {
             const SizedBox(height: 20),
             _buildParticipationTypeSection(),
             const SizedBox(height: 20),
-            const Text('Movements'),
+            _buildWodDetailsTitleSection(),
             const SizedBox(height: 10),
             _buildWodDetailsSection(),
             const SizedBox(height: 10),
@@ -75,18 +94,21 @@ class WodCreateScreen extends StatelessWidget {
           },
           maxLines: 1,
           decoration: InputDecoration(
-              suffixIcon: state.wodTypeSub.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        BlocProvider.of<WodCreateBloc>(context)
-                            .add(const TypeWodTypeSub(''));
-                        textEditingController.clear();
-                      },
-                    )
-                  : null,
-              border: const OutlineInputBorder(),
-              labelText: 'Time / Rounds / Etc'),
+            suffixIcon: state.wodTypeSub.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      BlocProvider.of<WodCreateBloc>(context)
+                          .add(const TypeWodTypeSub(''));
+                      textEditingController.clear();
+                    },
+                  )
+                : null,
+            border: const OutlineInputBorder(),
+            labelText: 'Time / Rounds / Etc',
+            errorText: state.isValidWodTypeSub ? null : 'Fill this form',
+            // errorText: state.wodTypeSub.isEmpty ? 'Fill this content' : null
+          ),
         );
       },
     );
@@ -137,6 +159,24 @@ class WodCreateScreen extends StatelessWidget {
                     ),
                   )
           ],
+        );
+      },
+    );
+  }
+
+  Widget _buildWodDetailsTitleSection() {
+    return BlocBuilder<WodCreateBloc, WodCreateState>(
+      builder: (context, state) {
+        final ThemeData themeData = Theme.of(context);
+
+        return Container(
+          decoration: BoxDecoration(
+              color: themeData.colorScheme.onPrimaryContainer,
+              borderRadius: const BorderRadius.all(Radius.circular(8))),
+          padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
+          child: Text("Movements",
+              style: themeData.textTheme.bodyLarge
+                  ?.copyWith(color: themeData.colorScheme.onPrimary)),
         );
       },
     );
@@ -203,7 +243,10 @@ class WodCreateScreen extends StatelessWidget {
                           )
                         : null,
                     border: const OutlineInputBorder(),
-                    labelText: 'ex) 15 power snatch, 95lbs'),
+                    labelText: 'ex) 15 power snatch, 95lbs',
+                    errorText: state.isValidWodDetails
+                        ? null
+                        : 'Insert at least one movement'),
               ),
             ),
             const SizedBox(width: 12),

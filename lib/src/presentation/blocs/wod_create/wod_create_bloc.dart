@@ -17,8 +17,9 @@ class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
     on<SelectParticipationType>(_participationTypeSelected);
     on<TypeMemberCount>(_memberCountChanged);
     on<TypeWodDetail>(_wodDetailChanged);
-    on<AddWodDetail>(_wodDetailAdded);
-    on<ClickDeleteWodDetail>(_wodDetailDeleted);
+    on<AddWodDetail>(_wodDetailAdd);
+    on<ClickDeleteWodDetail>(_wodDetailDelete);
+    on<SaveWod>(_wodSave);
   }
 
   FutureOr<void> _wodTypeChanged(
@@ -30,9 +31,11 @@ class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
 
   FutureOr<void> _wodTypeSubChanged(
       TypeWodTypeSub event, Emitter<WodCreateState> emit) {
-    logger.d('_wodTypeSubChanged ${event.wodTypeSub}');
+    final String wodTypeSub = event.wodTypeSub;
+    logger.d('_wodTypeSubChanged $wodTypeSub');
 
-    emit(state.copyWith(wodTypeSub: event.wodTypeSub));
+    emit(state.copyWith(
+        wodTypeSub: wodTypeSub, isValidWodTypeSub: wodTypeSub.isNotEmpty));
   }
 
   FutureOr<void> _participationTypeSelected(
@@ -44,9 +47,11 @@ class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
 
   FutureOr<void> _memberCountChanged(
       TypeMemberCount event, Emitter<WodCreateState> emit) {
-    logger.d('_participationTypeSelected: ${event.memberCount}');
+    final int memberCount = event.memberCount;
 
-    emit(state.copyWith(memberCount: event.memberCount));
+    logger.d('_participationTypeSelected: $memberCount');
+
+    emit(state.copyWith(memberCount: memberCount));
   }
 
   FutureOr<void> _wodDetailChanged(
@@ -56,22 +61,45 @@ class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
     emit(state.copyWith(wodDetail: event.wodDetail));
   }
 
-  FutureOr<void> _wodDetailAdded(
+  FutureOr<void> _wodDetailAdd(
       AddWodDetail event, Emitter<WodCreateState> emit) {
-    logger.d('_wodDetailAdded: ${event.wodDetail}');
+    final String wodDetail = event.wodDetail;
 
-    List<String> wodDetails = List.from(state.wodDetails)..add(event.wodDetail);
+    logger.d('_wodDetailAdded: $wodDetail');
 
-    emit(state.copyWith(wodDetails: wodDetails));
+    if (wodDetail.isEmpty) {
+      return Future.sync(() => null);
+    }
+
+    List<String> wodDetails = List.from(state.wodDetails)..add(wodDetail);
+
+    emit(state.copyWith(
+        wodDetails: wodDetails, isValidWodDetails: wodDetails.isNotEmpty));
   }
 
-  FutureOr<void> _wodDetailDeleted(
+  FutureOr<void> _wodDetailDelete(
       ClickDeleteWodDetail event, Emitter<WodCreateState> emit) {
     logger.d('_wodDetailDeleted: ${event.index}');
 
     List<String> wodDetails = List.from(state.wodDetails)
       ..removeAt(event.index);
 
-    emit(state.copyWith(wodDetails: wodDetails));
+    emit(state.copyWith(
+        wodDetails: wodDetails, isValidWodDetails: wodDetails.isNotEmpty));
+  }
+
+  FutureOr<void> _wodSave(SaveWod event, Emitter<WodCreateState> emit) {
+    logger.d('_wodCreate: ');
+
+    // Validation
+    if (state.wodTypeSub.isEmpty || state.wodDetails.isEmpty) {
+      emit(state.copyWith(
+          isValidWodTypeSub: state.wodTypeSub.isNotEmpty,
+          isValidWodDetails: state.wodDetails.isNotEmpty));
+
+      return Future.sync(() => null);
+    }
+
+    // TODO: 2023/01/04 save logic
   }
 }
