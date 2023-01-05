@@ -1,7 +1,5 @@
-import 'dart:async';
-
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:way_to_fit/src/core/config/logger.dart';
 
 import '../../../domain/repositories/auth_repository.dart';
@@ -38,7 +36,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  void _clickGoogleSignIn(ClickGoogleSignIn event, Emitter<AuthState> emit) async {
+  void _clickGoogleSignIn(ClickGoogleSignIn event,
+      Emitter<AuthState> emit) async {
     logger.d('_clickGoogleSignIn: ');
 
     emit(state.copyWith(status: AuthStatus.processing));
@@ -46,7 +45,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       await _authRepository.signInWithGoogle();
       emit(state.copyWith(status: AuthStatus.success));
-    }catch(e) {
+    } catch (e) {
       emit(state.copyWith(status: AuthStatus.failed, error: e.toString()));
     }
   }

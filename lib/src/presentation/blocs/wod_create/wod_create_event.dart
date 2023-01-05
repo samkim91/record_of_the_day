@@ -16,10 +16,10 @@ class SelectWodType extends WodCreateEvent {
   List<Object> get props => [wodType];
 }
 
-class TypeWodTypeSub extends WodCreateEvent {
+class TypeWodTypeDetail extends WodCreateEvent {
   final String wodTypeSub;
 
-  const TypeWodTypeSub(this.wodTypeSub);
+  const TypeWodTypeDetail(this.wodTypeSub);
 
   @override
   List<Object> get props => [wodTypeSub];
@@ -43,28 +43,28 @@ class TypeMemberCount extends WodCreateEvent {
   List<Object> get props => [memberCount];
 }
 
-class TypeWodDetail extends WodCreateEvent {
+class TypeWodMovement extends WodCreateEvent {
   final String wodDetail;
 
-  const TypeWodDetail(this.wodDetail);
+  const TypeWodMovement(this.wodDetail);
 
   @override
   List<Object> get props => [wodDetail];
 }
 
-class AddWodDetail extends WodCreateEvent {
+class AddWodMovement extends WodCreateEvent {
   final String wodDetail;
 
-  const AddWodDetail(this.wodDetail);
+  const AddWodMovement(this.wodDetail);
 
   @override
   List<Object> get props => [wodDetail];
 }
 
-class ClickDeleteWodDetail extends WodCreateEvent {
+class ClickDeleteWodMovement extends WodCreateEvent {
   final int index;
 
-  const ClickDeleteWodDetail(this.index);
+  const ClickDeleteWodMovement(this.index);
 
   @override
   List<Object> get props => [index];

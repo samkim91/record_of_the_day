@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:way_to_fit/src/domain/entities/participation_type.dart';
 
 import '../../../core/config/logger.dart';
+import '../../../data/models/wod.dart';
 import '../../../domain/entities/wod_type.dart';
 
 part 'wod_create_event.dart';
@@ -12,57 +13,64 @@ part 'wod_create_state.dart';
 
 class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
   WodCreateBloc() : super(const WodCreateState()) {
-    on<SelectWodType>(_wodTypeChanged);
-    on<TypeWodTypeSub>(_wodTypeSubChanged);
-    on<SelectParticipationType>(_participationTypeSelected);
-    on<TypeMemberCount>(_memberCountChanged);
-    on<TypeWodDetail>(_wodDetailChanged);
-    on<AddWodDetail>(_wodDetailAdd);
-    on<ClickDeleteWodDetail>(_wodDetailDelete);
-    on<SaveWod>(_wodSave);
+    on<SelectWodType>(_onChangeWodType);
+    on<TypeWodTypeDetail>(_onChangeWodTypeDetail);
+    on<SelectParticipationType>(_onSelectParticipationType);
+    on<TypeMemberCount>(_onChangeMemberCount);
+    on<TypeWodMovement>(_onChangeWodMovement);
+    on<AddWodMovement>(_onAddWodMovement);
+    on<ClickDeleteWodMovement>(_onDeleteWodMovement);
+    on<SaveWod>(_onSaveWod);
   }
 
-  FutureOr<void> _wodTypeChanged(
-      SelectWodType event, Emitter<WodCreateState> emit) async {
+  FutureOr<void> _onChangeWodType(
+      SelectWodType event, Emitter<WodCreateState> emit) {
     logger.d('_wodTypeChanged ${event.wodType}');
 
-    emit(state.copyWith(wodType: event.wodType));
+    final Wod updatedWod = state.wod.copyWith(type: event.wodType);
+
+    emit(state.copyWith(wod: updatedWod));
   }
 
-  FutureOr<void> _wodTypeSubChanged(
-      TypeWodTypeSub event, Emitter<WodCreateState> emit) {
+  FutureOr<void> _onChangeWodTypeDetail(
+      TypeWodTypeDetail event, Emitter<WodCreateState> emit) {
+    logger.d('_wodTypeSubChanged ${event.wodTypeSub}');
+
     final String wodTypeSub = event.wodTypeSub;
-    logger.d('_wodTypeSubChanged $wodTypeSub');
+    final Wod updatedWod = state.wod.copyWith(typeDetail: wodTypeSub);
 
     emit(state.copyWith(
-        wodTypeSub: wodTypeSub, isValidWodTypeSub: wodTypeSub.isNotEmpty));
+        wod: updatedWod, isValidTypeDetail: wodTypeSub.isNotEmpty));
   }
 
-  FutureOr<void> _participationTypeSelected(
+  FutureOr<void> _onSelectParticipationType(
       SelectParticipationType event, Emitter<WodCreateState> emit) {
     logger.d('_participationTypeSelected: ${event.participationType}');
 
-    emit(state.copyWith(participationType: event.participationType));
+    final Wod updatedWod =
+        state.wod.copyWith(participationType: event.participationType);
+
+    emit(state.copyWith(wod: updatedWod));
   }
 
-  FutureOr<void> _memberCountChanged(
+  FutureOr<void> _onChangeMemberCount(
       TypeMemberCount event, Emitter<WodCreateState> emit) {
-    final int memberCount = event.memberCount;
+    logger.d('_participationTypeSelected: ${event.memberCount}');
 
-    logger.d('_participationTypeSelected: $memberCount');
+    final Wod updatedWod = state.wod.copyWith(memberCount: event.memberCount);
 
-    emit(state.copyWith(memberCount: memberCount));
+    emit(state.copyWith(wod: updatedWod));
   }
 
-  FutureOr<void> _wodDetailChanged(
-      TypeWodDetail event, Emitter<WodCreateState> emit) {
+  FutureOr<void> _onChangeWodMovement(
+      TypeWodMovement event, Emitter<WodCreateState> emit) {
     logger.d('_wodDetailChanged: ${event.wodDetail}');
 
-    emit(state.copyWith(wodDetail: event.wodDetail));
+    emit(state.copyWith(movement: event.wodDetail));
   }
 
-  FutureOr<void> _wodDetailAdd(
-      AddWodDetail event, Emitter<WodCreateState> emit) {
+  FutureOr<void> _onAddWodMovement(
+      AddWodMovement event, Emitter<WodCreateState> emit) {
     final String wodDetail = event.wodDetail;
 
     logger.d('_wodDetailAdded: $wodDetail');
@@ -71,31 +79,35 @@ class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
       return Future.sync(() => null);
     }
 
-    List<String> wodDetails = List.from(state.wodDetails)..add(wodDetail);
+    List<String> wodDetails = List.from(state.wod.movements)..add(wodDetail);
+
+    final Wod updatedWod = state.wod.copyWith(movements: wodDetails);
 
     emit(state.copyWith(
-        wodDetails: wodDetails, isValidWodDetails: wodDetails.isNotEmpty));
+        wod: updatedWod, isValidMovements: wodDetails.isNotEmpty));
   }
 
-  FutureOr<void> _wodDetailDelete(
-      ClickDeleteWodDetail event, Emitter<WodCreateState> emit) {
+  FutureOr<void> _onDeleteWodMovement(
+      ClickDeleteWodMovement event, Emitter<WodCreateState> emit) {
     logger.d('_wodDetailDeleted: ${event.index}');
 
-    List<String> wodDetails = List.from(state.wodDetails)
+    List<String> wodDetails = List.from(state.wod.movements)
       ..removeAt(event.index);
 
+    final Wod updatedWod = state.wod.copyWith(movements: wodDetails);
+
     emit(state.copyWith(
-        wodDetails: wodDetails, isValidWodDetails: wodDetails.isNotEmpty));
+        wod: updatedWod, isValidMovements: wodDetails.isNotEmpty));
   }
 
-  FutureOr<void> _wodSave(SaveWod event, Emitter<WodCreateState> emit) {
+  FutureOr<void> _onSaveWod(SaveWod event, Emitter<WodCreateState> emit) async {
     logger.d('_wodCreate: ');
 
     // Validation
-    if (state.wodTypeSub.isEmpty || state.wodDetails.isEmpty) {
+    if (state.wod.typeDetail.isEmpty || state.wod.movements.isEmpty) {
       emit(state.copyWith(
-          isValidWodTypeSub: state.wodTypeSub.isNotEmpty,
-          isValidWodDetails: state.wodDetails.isNotEmpty));
+          isValidTypeDetail: state.wod.typeDetail.isNotEmpty,
+          isValidMovements: state.wod.movements.isNotEmpty));
 
       return Future.sync(() => null);
     }

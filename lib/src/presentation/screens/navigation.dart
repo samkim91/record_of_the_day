@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 
 enum NavigationBarItem {
-
-  wod('WOD', Icons.rowing),
+  wod('WOD', Icons.format_list_numbered),
   rm('RM', Icons.fitness_center),
   profile('Profile', Icons.person);
 

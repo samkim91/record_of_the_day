@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,7 +67,7 @@ class WodCreateScreen extends StatelessWidget {
     return BlocBuilder<WodCreateBloc, WodCreateState>(
       builder: (context, state) {
         return DropdownButton(
-          value: state.wodType,
+          value: state.wod.type,
           items: WodType.values.map((WodType value) {
             return DropdownMenuItem<WodType>(
                 value: value, child: Center(child: Text(value.text)));
@@ -90,23 +89,24 @@ class WodCreateScreen extends StatelessWidget {
         return TextField(
           controller: textEditingController,
           onChanged: (value) {
-            BlocProvider.of<WodCreateBloc>(context).add(TypeWodTypeSub(value));
+            BlocProvider.of<WodCreateBloc>(context)
+                .add(TypeWodTypeDetail(value));
           },
           maxLines: 1,
           decoration: InputDecoration(
-            suffixIcon: state.wodTypeSub.isNotEmpty
+            suffixIcon: state.wod.typeDetail.isNotEmpty
                 ? IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       BlocProvider.of<WodCreateBloc>(context)
-                          .add(const TypeWodTypeSub(''));
+                          .add(const TypeWodTypeDetail(''));
                       textEditingController.clear();
                     },
                   )
                 : null,
             border: const OutlineInputBorder(),
             labelText: 'Time / Rounds / Etc',
-            errorText: state.isValidWodTypeSub ? null : 'Fill this form',
+            errorText: state.isValidTypeDetail ? null : 'Fill this form',
             // errorText: state.wodTypeSub.isEmpty ? 'Fill this content' : null
           ),
         );
@@ -122,7 +122,7 @@ class WodCreateScreen extends StatelessWidget {
             ToggleButtons(
               isSelected: ParticipationType.values
                   .map((ParticipationType participationType) {
-                return participationType == state.participationType;
+                return participationType == state.wod.participationType;
               }).toList(),
               constraints: const BoxConstraints.expand(height: 60, width: 80),
               borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -135,11 +135,11 @@ class WodCreateScreen extends StatelessWidget {
                 return Text(participationType.text);
               }).toList(),
             ),
-            state.participationType == ParticipationType.individual
+            state.wod.participationType == ParticipationType.individual
                 ? Container()
                 : const SizedBox(width: 10),
             // const SizedBox(width: 10),
-            state.participationType == ParticipationType.individual
+            state.wod.participationType == ParticipationType.individual
                 ? Container()
                 : Expanded(
                     child: TextField(
@@ -188,7 +188,7 @@ class WodCreateScreen extends StatelessWidget {
         final ColorScheme colors = Theme.of(context).colorScheme;
 
         return Wrap(
-          children: state.wodDetails.asMap().entries.map((entry) {
+          children: state.wod.movements.asMap().entries.map((entry) {
             return InputChip(
               // padding: const EdgeInsets.all(7),
               label: Center(child: Text(entry.value)),
@@ -205,7 +205,7 @@ class WodCreateScreen extends StatelessWidget {
               ),
               onDeleted: () {
                 BlocProvider.of<WodCreateBloc>(context)
-                    .add(ClickDeleteWodDetail(entry.key));
+                    .add(ClickDeleteWodMovement(entry.key));
               },
             );
           }).toList(),
@@ -228,23 +228,23 @@ class WodCreateScreen extends StatelessWidget {
                 controller: textEditingController,
                 onChanged: (value) {
                   BlocProvider.of<WodCreateBloc>(context)
-                      .add(TypeWodDetail(value));
+                      .add(TypeWodMovement(value));
                 },
                 maxLines: 1,
                 decoration: InputDecoration(
-                    suffixIcon: state.wodDetail.isNotEmpty
+                    suffixIcon: state.movement.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.clear),
                             onPressed: () {
                               BlocProvider.of<WodCreateBloc>(context)
-                                  .add(const TypeWodDetail(''));
+                                  .add(const TypeWodMovement(''));
                               textEditingController.clear();
                             },
                           )
                         : null,
                     border: const OutlineInputBorder(),
                     labelText: 'ex) 15 power snatch, 95lbs',
-                    errorText: state.isValidWodDetails
+                    errorText: state.isValidMovements
                         ? null
                         : 'Insert at least one movement'),
               ),
@@ -253,9 +253,9 @@ class WodCreateScreen extends StatelessWidget {
             IconButton(
               onPressed: () {
                 BlocProvider.of<WodCreateBloc>(context)
-                    .add(AddWodDetail(state.wodDetail));
+                    .add(AddWodMovement(state.movement));
                 BlocProvider.of<WodCreateBloc>(context)
-                    .add(const TypeWodDetail(''));
+                    .add(const TypeWodMovement(''));
                 textEditingController.clear();
               },
               icon: const Icon(Icons.add),
