@@ -7,12 +7,15 @@ import 'package:way_to_fit/src/domain/entities/participation_type.dart';
 import '../../../core/config/logger.dart';
 import '../../../data/models/wod.dart';
 import '../../../domain/entities/wod_type.dart';
+import '../../../domain/repositories/wod_repository.dart';
 
 part 'wod_create_event.dart';
 part 'wod_create_state.dart';
 
 class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
-  WodCreateBloc() : super(const WodCreateState()) {
+  final WodRepository _wodRepository;
+
+  WodCreateBloc(this._wodRepository) : super(const WodCreateState()) {
     on<SelectWodType>(_onChangeWodType);
     on<TypeWodTypeDetail>(_onChangeWodTypeDetail);
     on<SelectParticipationType>(_onSelectParticipationType);
@@ -112,6 +115,12 @@ class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
       return Future.sync(() => null);
     }
 
-    // TODO: 2023/01/04 save logic
+    try {
+      emit(state.copyWith(status: WodCreateStatus.processing));
+      await _wodRepository.createWod(state.wod);
+      emit(state.copyWith(status: WodCreateStatus.success));
+    } catch (e) {
+      emit(state.copyWith(status: WodCreateStatus.error, error: e.toString()));
+    }
   }
 }

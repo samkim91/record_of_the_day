@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:way_to_fit/src/domain/entities/participation_type.dart';
 import 'package:way_to_fit/src/domain/entities/wod_type.dart';
 import 'package:way_to_fit/src/injector.dart';
@@ -37,27 +38,41 @@ class WodCreateScreen extends StatelessWidget {
   }
 
   Widget _buildBody() {
-    return Container(
-      margin: const EdgeInsets.only(left: 20.0, right: 20.0),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            _buildWodTypeSection(),
-            const SizedBox(height: 20),
-            _buildWodTypeSubSection(),
-            const SizedBox(height: 20),
-            _buildParticipationTypeSection(),
-            const SizedBox(height: 20),
-            _buildWodDetailsTitleSection(),
-            const SizedBox(height: 10),
-            _buildWodDetailsSection(),
-            const SizedBox(height: 10),
-            _buildWodDetailAddSection(),
-            const SizedBox(height: 20),
-          ],
+    return BlocListener<WodCreateBloc, WodCreateState>(
+      listener: (context, state) async {
+        if (state.status.isProcessing) {
+          await EasyLoading.show(status: "Saving...");
+        } else if (state.status.isSuccess) {
+          await EasyLoading.showSuccess("Saved");
+          // TODO: 2023/01/06 move to read wod screen
+        } else if (state.status.isError) {
+          await EasyLoading.showError(state.error);
+        } else {
+          await EasyLoading.dismiss();
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              _buildWodTypeSection(),
+              const SizedBox(height: 20),
+              _buildWodTypeSubSection(),
+              const SizedBox(height: 20),
+              _buildParticipationTypeSection(),
+              const SizedBox(height: 20),
+              _buildWodDetailsTitleSection(),
+              const SizedBox(height: 10),
+              _buildWodDetailsSection(),
+              const SizedBox(height: 10),
+              _buildWodDetailAddSection(),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'firebase_options.dart';
@@ -37,13 +38,15 @@ class MyApp extends StatelessWidget {
           }
 
           return MaterialApp(
-              home: home,
-              theme: ThemeData(
-                  colorSchemeSeed: const Color(0xff6750a4),
-                  // primarySwatch: primaryBlack,
-                  useMaterial3: true,
-                  splashFactory: NoSplash.splashFactory),
-              darkTheme: ThemeData.dark());
+            home: home,
+            theme: ThemeData(
+                colorSchemeSeed: const Color(0xff6750a4),
+                // primarySwatch: primaryBlack,
+                useMaterial3: true,
+                splashFactory: NoSplash.splashFactory),
+            darkTheme: ThemeData.dark(),
+            builder: EasyLoading.init(),
+          );
         });
   }
 }
