@@ -194,7 +194,7 @@ class WodCreateScreen extends StatelessWidget {
 
         return Container(
           decoration: BoxDecoration(
-              color: themeData.colorScheme.onPrimaryContainer,
+              color: themeData.colorScheme.onTertiaryContainer,
               borderRadius: const BorderRadius.all(Radius.circular(8))),
           padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
           child: Text("Movements",
@@ -211,6 +211,7 @@ class WodCreateScreen extends StatelessWidget {
         final ColorScheme colors = Theme.of(context).colorScheme;
 
         return Wrap(
+          runSpacing: 1.0,
           children: state.wod.movements.asMap().entries.map((entry) {
             return InputChip(
               // padding: const EdgeInsets.all(7),
