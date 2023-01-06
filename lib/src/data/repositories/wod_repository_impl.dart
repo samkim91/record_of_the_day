@@ -3,23 +3,30 @@ import 'package:way_to_fit/src/data/models/wod.dart';
 import 'package:way_to_fit/src/domain/repositories/wod_repository.dart';
 
 class WodRepositoryImpl implements WodRepository {
+  final database = firestore.collection(Collections.wods.name).withConverter(
+        fromFirestore: Wod.fromFirestore,
+        toFirestore: (Wod wod, options) => wod.toFirestore(),
+      );
+
   @override
   Future<Wod> createWod(Wod wod) async {
-    final result = await firestore
-        .collection(Collections.wods.name)
-        .withConverter(
-          fromFirestore: Wod.fromFirestore,
-          toFirestore: (Wod wod, options) => wod.toFirestore(),
-        )
-        .add(wod);
+    final result = await database.add(wod);
 
     return wod.copyWith(id: result.id);
   }
 
   @override
-  Future<void> readWod() {
-    // TODO: implement readWod
-    throw UnimplementedError();
+  Future<Wod> readWod(String id) async {
+    final reference = database.doc(id);
+
+    final docSnap = await reference.get();
+    final wod = docSnap.data();
+
+    if (wod != null) {
+      return wod;
+    } else {
+      throw NullThrownError();
+    }
   }
 
   @override

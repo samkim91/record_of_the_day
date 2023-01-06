@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:way_to_fit/src/core/config/network.dart';
 import 'package:way_to_fit/src/domain/entities/participation_type.dart';
 import 'package:way_to_fit/src/domain/entities/wod_type.dart';
 import 'package:way_to_fit/src/injector.dart';
-import 'package:way_to_fit/src/presentation/blocs/wod_create/wod_create_bloc.dart';
+import 'package:way_to_fit/src/presentation/blocs/wod/create/wod_create_bloc.dart';
 import 'package:way_to_fit/src/presentation/screens/wod/wod_read_screen.dart';
 
 class WodCreateScreen extends StatelessWidget {
@@ -44,7 +45,7 @@ class WodCreateScreen extends StatelessWidget {
         if (state.status.isProcessing) {
           EasyLoading.show(status: "Saving...");
         } else if (state.status.isSuccess) {
-          EasyLoading.showSuccess("Saved: ${state.wod.id}");
+          EasyLoading.showSuccess("Saved!");
 
           if (state.wod.id != null) {
             Navigator.pushReplacement(

@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:way_to_fit/src/core/config/logger.dart';
+import 'package:way_to_fit/src/core/config/network.dart';
+import 'package:way_to_fit/src/data/models/wod.dart';
 import 'package:way_to_fit/src/domain/entities/participation_type.dart';
-
-import '../../../core/config/logger.dart';
-import '../../../data/models/wod.dart';
-import '../../../domain/entities/wod_type.dart';
-import '../../../domain/repositories/wod_repository.dart';
+import 'package:way_to_fit/src/domain/entities/wod_type.dart';
+import 'package:way_to_fit/src/domain/repositories/wod_repository.dart';
 
 part 'wod_create_event.dart';
 part 'wod_create_state.dart';
@@ -116,11 +116,11 @@ class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
     }
 
     try {
-      emit(state.copyWith(status: WodCreateStatus.processing));
+      emit(state.copyWith(status: NetworkStatus.processing));
       final wod = await _wodRepository.createWod(state.wod);
-      emit(state.copyWith(wod: wod, status: WodCreateStatus.success));
+      emit(state.copyWith(wod: wod, status: NetworkStatus.success));
     } catch (e) {
-      emit(state.copyWith(status: WodCreateStatus.error, error: e.toString()));
+      emit(state.copyWith(status: NetworkStatus.error, error: e.toString()));
     }
   }
 }
