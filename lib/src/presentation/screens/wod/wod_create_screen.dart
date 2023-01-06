@@ -6,6 +6,7 @@ import 'package:way_to_fit/src/domain/entities/participation_type.dart';
 import 'package:way_to_fit/src/domain/entities/wod_type.dart';
 import 'package:way_to_fit/src/injector.dart';
 import 'package:way_to_fit/src/presentation/blocs/wod_create/wod_create_bloc.dart';
+import 'package:way_to_fit/src/presentation/screens/wod/wod_read_screen.dart';
 
 class WodCreateScreen extends StatelessWidget {
   const WodCreateScreen({Key? key}) : super(key: key);
@@ -39,16 +40,22 @@ class WodCreateScreen extends StatelessWidget {
 
   Widget _buildBody() {
     return BlocListener<WodCreateBloc, WodCreateState>(
-      listener: (context, state) async {
+      listener: (context, state) {
         if (state.status.isProcessing) {
-          await EasyLoading.show(status: "Saving...");
+          EasyLoading.show(status: "Saving...");
         } else if (state.status.isSuccess) {
-          await EasyLoading.showSuccess("Saved");
-          // TODO: 2023/01/06 move to read wod screen
+          EasyLoading.showSuccess("Saved: ${state.wod.id}");
+
+          if (state.wod.id != null) {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => WodReadScreen(wodId: state.wod.id!)));
+          }
         } else if (state.status.isError) {
-          await EasyLoading.showError(state.error);
+          EasyLoading.showError(state.error);
         } else {
-          await EasyLoading.dismiss();
+          EasyLoading.dismiss();
         }
       },
       child: Container(

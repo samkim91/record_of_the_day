@@ -5,7 +5,7 @@ abstract class WodRepository {
 
   Future<void> readWod();
 
-  Future<void> createWod(Wod wod);
+  Future<Wod> createWod(Wod wod);
 
   Future<void> setWodInactive();
 }

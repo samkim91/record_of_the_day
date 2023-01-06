@@ -4,43 +4,54 @@ import 'package:way_to_fit/src/domain/entities/participation_type.dart';
 import 'package:way_to_fit/src/domain/entities/wod_type.dart';
 
 class Wod extends Equatable {
+  final String? id;
+  final DateTime? createdAt;
   final WodType type;
   final String typeDetail;
   final ParticipationType participationType;
   final int memberCount;
   final List<String> movements;
-  final DateTime? createdAt;
 
   // TODO: 2023/01/05 records
 
   const Wod({
+    this.id,
+    this.createdAt,
     this.type = WodType.amrap,
     this.typeDetail = '',
     this.participationType = ParticipationType.individual,
     this.memberCount = 0,
     this.movements = const <String>[],
-    this.createdAt,
   });
 
   @override
-  List<Object?> get props =>
-      [type, typeDetail, participationType, memberCount, movements, createdAt];
+  List<Object?> get props => [
+        id,
+        createdAt,
+        type,
+        typeDetail,
+        participationType,
+        memberCount,
+        movements
+      ];
 
   Wod copyWith({
+    String? id,
+    DateTime? createdAt,
     WodType? type,
     String? typeDetail,
     ParticipationType? participationType,
     int? memberCount,
     List<String>? movements,
-    DateTime? createdAt,
   }) {
     return Wod(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
       type: type ?? this.type,
       typeDetail: typeDetail ?? this.typeDetail,
       participationType: participationType ?? this.participationType,
       memberCount: memberCount ?? this.memberCount,
       movements: movements ?? this.movements,
-      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -50,6 +61,7 @@ class Wod extends Equatable {
   ) {
     final data = snapshot.data();
     return Wod(
+      id: snapshot.id,
       type: data?["type"]
           ? WodType.values
               .firstWhere((element) => element.text == data?["type"])
