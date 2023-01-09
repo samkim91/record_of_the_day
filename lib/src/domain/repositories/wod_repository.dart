@@ -1,7 +1,7 @@
-import '../../data/models/wod.dart';
+import 'package:way_to_fit/src/data/models/wod.dart';
 
 abstract class WodRepository {
-  Future<void> readWods();
+  Future<List<Wod>> readWods();
 
   Future<void> readWod(String id);
 

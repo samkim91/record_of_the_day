@@ -1,7 +1,5 @@
 part of 'wod_read_bloc.dart';
 
-enum WodReadStatus { initial, processing, success, error }
-
 class WodReadState extends Equatable {
   final Wod wod;
   final NetworkStatus status;

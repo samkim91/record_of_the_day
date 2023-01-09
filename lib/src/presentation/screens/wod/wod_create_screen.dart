@@ -122,7 +122,7 @@ class WodCreateScreen extends StatelessWidget {
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       BlocProvider.of<WodCreateBloc>(context)
-                          .add(const TypeWodTypeDetail(''));
+                          .add(const TypeWodTypeDetail(""));
                       textEditingController.clear();
                     },
                   )
@@ -261,7 +261,7 @@ class WodCreateScreen extends StatelessWidget {
                             icon: const Icon(Icons.clear),
                             onPressed: () {
                               BlocProvider.of<WodCreateBloc>(context)
-                                  .add(const TypeWodMovement(''));
+                                  .add(const TypeWodMovement(""));
                               textEditingController.clear();
                             },
                           )
@@ -279,7 +279,7 @@ class WodCreateScreen extends StatelessWidget {
                 BlocProvider.of<WodCreateBloc>(context)
                     .add(AddWodMovement(state.movement));
                 BlocProvider.of<WodCreateBloc>(context)
-                    .add(const TypeWodMovement(''));
+                    .add(const TypeWodMovement(""));
                 textEditingController.clear();
               },
               icon: const Icon(Icons.add),

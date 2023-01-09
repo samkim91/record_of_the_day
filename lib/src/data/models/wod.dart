@@ -11,6 +11,7 @@ class Wod extends Equatable {
   final ParticipationType participationType;
   final int memberCount;
   final List<String> movements;
+  final bool isActive;
 
   // TODO: 2023/01/05 records
 
@@ -18,10 +19,11 @@ class Wod extends Equatable {
     this.id,
     this.createdAt,
     this.type = WodType.amrap,
-    this.typeDetail = '',
+    this.typeDetail = "",
     this.participationType = ParticipationType.individual,
     this.memberCount = 0,
     this.movements = const <String>[],
+    this.isActive = true,
   });
 
   @override
@@ -32,7 +34,8 @@ class Wod extends Equatable {
         typeDetail,
         participationType,
         memberCount,
-        movements
+        movements,
+        isActive,
       ];
 
   Wod copyWith({
@@ -43,6 +46,7 @@ class Wod extends Equatable {
     ParticipationType? participationType,
     int? memberCount,
     List<String>? movements,
+    bool? isActive,
   }) {
     return Wod(
       id: id ?? this.id,
@@ -52,6 +56,7 @@ class Wod extends Equatable {
       participationType: participationType ?? this.participationType,
       memberCount: memberCount ?? this.memberCount,
       movements: movements ?? this.movements,
+      isActive: isActive ?? this.isActive,
     );
   }
 
@@ -62,12 +67,13 @@ class Wod extends Equatable {
     final data = snapshot.data();
     return Wod(
       id: snapshot.id,
-      type: data?["type"]
+      createdAt: data?["createdAt"].toDate(),
+      type: data?["type"] != null
           ? WodType.values
               .firstWhere((element) => element.text == data?["type"])
           : WodType.custom,
       typeDetail: data?["typeDetail"],
-      participationType: data?["participationType"]
+      participationType: data?["participationType"] != null
           ? ParticipationType.values.firstWhere(
               (element) => element.text == data?["participationType"])
           : ParticipationType.individual,
@@ -75,18 +81,19 @@ class Wod extends Equatable {
       movements: data?["movements"] is Iterable
           ? List.from(data?["movements"])
           : <String>[],
-      createdAt: data?["createdAt"],
+      isActive: data?["isActive"],
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
+      "createdAt": FieldValue.serverTimestamp(),
       "type": type.text,
       "typeDetail": typeDetail,
       "participationType": participationType.text,
       "memberCount": memberCount,
       "movements": movements,
-      "createdAt": FieldValue.serverTimestamp(),
+      "isActive": isActive,
     };
   }
 }

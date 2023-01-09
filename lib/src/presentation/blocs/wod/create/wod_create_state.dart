@@ -13,9 +13,9 @@ class WodCreateState extends Equatable {
     this.wod = const Wod(),
     this.isValidTypeDetail = true,
     this.isValidMovements = true,
-    this.movement = '',
+    this.movement = "",
     this.status = NetworkStatus.initial,
-    this.error = '',
+    this.error = "",
   });
 
   @override

@@ -30,9 +30,10 @@ class WodRepositoryImpl implements WodRepository {
   }
 
   @override
-  Future<void> readWods() {
-    // TODO: implement readWods
-    throw UnimplementedError();
+  Future<List<Wod>> readWods() async {
+    final reference = await database.where("isActive", isEqualTo: true).get();
+
+    return reference.docs.map((e) => e.data()).toList();
   }
 
   @override

@@ -8,7 +8,7 @@ class AuthState extends Equatable {
   final String error;
 
   const AuthState(
-      {this.email = '', this.status = AuthStatus.initial, this.error = ''});
+      {this.email = "", this.status = AuthStatus.initial, this.error = ""});
 
   @override
   List<Object?> get props => [email, status, error];
