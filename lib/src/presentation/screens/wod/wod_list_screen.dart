@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:way_to_fit/src/core/config/logger.dart';
 import 'package:way_to_fit/src/core/config/network.dart';
-import 'package:way_to_fit/src/data/models/wod.dart';
 import 'package:way_to_fit/src/injector.dart';
 import 'package:way_to_fit/src/presentation/blocs/wod/list/wod_list_bloc.dart';
 import 'package:way_to_fit/src/presentation/screens/wod/wod_read_screen.dart';
@@ -17,8 +17,6 @@ class WodListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    scrollController.addListener(() => _onScroll(context));
-
     return BlocProvider(
       create: (context) => injector.get<WodListBloc>(),
       child: _buildBody(),
@@ -28,6 +26,8 @@ class WodListScreen extends StatelessWidget {
   Widget _buildBody() {
     return BlocBuilder<WodListBloc, WodListState>(
       builder: (context, state) {
+        scrollController.addListener(() => _onScroll(context));
+
         if (state.status.isInitial) {
           EasyLoading.show();
           BlocProvider.of<WodListBloc>(context).add(const GetWods());
@@ -41,29 +41,25 @@ class WodListScreen extends StatelessWidget {
             child: Text("Failed to load wods: ${state.error}"),
           );
         }
-        if (state.status.isSuccess) {
-          EasyLoading.dismiss();
+        if (state.status.isSuccess || state.status.isProcessing) {
+          state.status.isProcessing
+              ? EasyLoading.show()
+              : EasyLoading.dismiss();
 
-          return Scrollbar(
-              child: ListView(
-            controller: scrollController,
-            children: [
-              WodItemWidget(
-                wod: const Wod(),
-                onClickWod: (_) => _onClickWod(context, ""),
-              ),
-              WodItemWidget(
-                wod: const Wod(),
-                onClickWod: (_) => _onClickWod(context, ""),
-              ),
-              WodItemWidget(
-                wod: const Wod(),
-                onClickWod: (_) => _onClickWod(context, ""),
-              ),
-            ],
-          ));
+          return RefreshIndicator(
+            onRefresh: () => _onRefresh(context),
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: state.wods.length,
+              itemBuilder: (context, index) {
+                return WodItemWidget(
+                    wod: state.wods[index],
+                    onClickWod: () => _onClickWod(context, ""));
+              },
+            ),
+          );
         }
-        EasyLoading.show();
+
         return Container();
       },
     );
@@ -76,17 +72,26 @@ class WodListScreen extends StatelessWidget {
   }
 
   void _onScroll(BuildContext context) {
-    logger.d('_onScroll: ');
     final maxScroll = scrollController.position.maxScrollExtent;
     final currentScroll = scrollController.position.pixels;
+    final scrollDirection = scrollController.position.userScrollDirection;
     final wodListBloc = BlocProvider.of<WodListBloc>(context);
     final networkStatus = wodListBloc.state.status;
 
-    final needToLoadMore = maxScroll - currentScroll <= 200.0 &&
+    final needToLoadMore = maxScroll - currentScroll < 100 &&
         (networkStatus.isInitial || networkStatus.isSuccess);
 
     if (needToLoadMore) {
-      wodListBloc.add(const GetWods());
+      if (!wodListBloc.state.isMoreData &&
+          scrollDirection == ScrollDirection.reverse) {
+        EasyLoading.showInfo("No more data");
+      } else {
+        wodListBloc.add(const GetWods());
+      }
     }
+  }
+
+  Future<void> _onRefresh(BuildContext context) async {
+    BlocProvider.of<WodListBloc>(context).add(const InitializeWods());
   }
 }

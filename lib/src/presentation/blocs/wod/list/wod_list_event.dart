@@ -8,6 +8,10 @@ abstract class WodListEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class InitializeWods extends WodListEvent {
+  const InitializeWods();
+}
+
 class GetWods extends WodListEvent {
   const GetWods();
 }
