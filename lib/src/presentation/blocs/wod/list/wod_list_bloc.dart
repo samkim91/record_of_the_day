@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:way_to_fit/src/core/config/logger.dart';
 import 'package:way_to_fit/src/core/config/network.dart';
+import 'package:way_to_fit/src/core/utils/debounce.dart';
 import 'package:way_to_fit/src/data/models/wod.dart';
 import 'package:way_to_fit/src/domain/repositories/wod_repository.dart';
 
@@ -17,11 +18,11 @@ class WodListBloc extends Bloc<WodListEvent, WodListState> {
 
   WodListBloc(this._wodRepository) : super(const WodListState()) {
     on<InitializeWods>(_initializeWods);
-    on<GetWods>(_getWods);
+    on<GetWods>(_getWods, transformer: debounce());
   }
 
-  FutureOr<void> _initializeWods(
-      InitializeWods event, Emitter<WodListState> emit) {
+  FutureOr<void> _initializeWods(InitializeWods event,
+      Emitter<WodListState> emit) {
     logger.d("_initializeWods: ");
     const wodListState = WodListState();
     emit(wodListState);
@@ -30,19 +31,21 @@ class WodListBloc extends Bloc<WodListEvent, WodListState> {
   FutureOr<void> _getWods(GetWods event, Emitter<WodListState> emit) async {
     logger.d("_getWods: ");
     try {
-      emit(state.copyWith(status: NetworkStatus.processing));
-
       Wod? lastWod = state.wods.lastOrNull;
+
+      emit(state.copyWith(status: NetworkStatus.processing));
 
       final wods = await _wodRepository.readWods(lastWod, state.pageSize);
 
       if (wods.last == lastWod) {
-        emit(state.copyWith(isMoreData: false, status: NetworkStatus.success));
+        emit(
+            state.copyWith(isMoreData: false, status: NetworkStatus.success));
 
         return Future.sync(() => null);
       }
 
-      List<Wod> addedWods = List.from(state.wods)..addAll(wods);
+      List<Wod> addedWods = List.from(state.wods)
+        ..addAll(wods);
 
       emit(state.copyWith(wods: addedWods, status: NetworkStatus.success));
     } catch (e) {
