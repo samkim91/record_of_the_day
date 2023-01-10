@@ -82,6 +82,12 @@ class WodReadScreen extends StatelessWidget {
               const SizedBox(height: 10),
               _buildWodDetailsSection(),
               const SizedBox(height: 30),
+              _buildInstructionsTitleSection(),
+              const SizedBox(height: 10),
+              _buildInstructionsSection(),
+              const SizedBox(height: 30),
+              _buildRecordsTitleSection(),
+              const SizedBox(height: 10),
               _buildRecordsSection(),
               const SizedBox(height: 20),
             ],
@@ -161,6 +167,63 @@ class WodReadScreen extends StatelessWidget {
               ),
             );
           }).toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildInstructionsTitleSection() {
+    return BlocBuilder<WodReadBloc, WodReadState>(
+      builder: (context, state) {
+        if (state.wod.instructions.isEmpty) {
+          return const SizedBox();
+        }
+
+        final ThemeData themeData = Theme.of(context);
+
+        return Container(
+          decoration: BoxDecoration(
+              color: themeData.colorScheme.onTertiaryContainer,
+              borderRadius: const BorderRadius.all(Radius.circular(8))),
+          padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
+          child: Text("Instructions",
+              style: themeData.textTheme.bodyLarge
+                  ?.copyWith(color: themeData.colorScheme.onPrimary)),
+        );
+      },
+    );
+  }
+
+  Widget _buildInstructionsSection() {
+    return BlocBuilder<WodReadBloc, WodReadState>(builder: (context, state) {
+      if (state.wod.instructions.isEmpty) {
+        return const SizedBox();
+      }
+
+      return TextField(
+        controller: TextEditingController(text: state.wod.instructions),
+        enabled: false,
+      );
+    });
+  }
+
+  Widget _buildRecordsTitleSection() {
+    return BlocBuilder<WodReadBloc, WodReadState>(
+      builder: (context, state) {
+        // if (state.wod.instructions.isEmpty) {
+        //   return const SizedBox();
+        // }
+
+        final ThemeData themeData = Theme.of(context);
+
+        return Container(
+          decoration: BoxDecoration(
+              color: themeData.colorScheme.onTertiaryContainer,
+              borderRadius: const BorderRadius.all(Radius.circular(8))),
+          padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
+          child: Text("Records",
+              style: themeData.textTheme.bodyLarge
+                  ?.copyWith(color: themeData.colorScheme.onPrimary)),
         );
       },
     );

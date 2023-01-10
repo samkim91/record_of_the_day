@@ -77,6 +77,10 @@ class WodCreateScreen extends StatelessWidget {
               _buildWodDetailsSection(),
               const SizedBox(height: 10),
               _buildWodDetailAddSection(),
+              const SizedBox(height: 30),
+              _buildInstructionsTitleSection(),
+              const SizedBox(height: 20),
+              _buildInstructionsSection(),
               const SizedBox(height: 20),
             ],
           ),
@@ -118,13 +122,13 @@ class WodCreateScreen extends StatelessWidget {
           decoration: InputDecoration(
             suffixIcon: state.wod.typeDetail.isNotEmpty
                 ? IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: () {
-                BlocProvider.of<WodCreateBloc>(context)
-                    .add(const TypeWodTypeDetail(""));
-                textEditingController.clear();
-              },
-            )
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      BlocProvider.of<WodCreateBloc>(context)
+                          .add(const TypeWodTypeDetail(""));
+                      textEditingController.clear();
+                    },
+                  )
                 : null,
             border: const OutlineInputBorder(),
             labelText: 'Time / Rounds / Etc',
@@ -161,22 +165,22 @@ class WodCreateScreen extends StatelessWidget {
             state.wod.participationType == ParticipationType.individual
                 ? const SizedBox()
                 : Expanded(
-              child: TextField(
-                maxLines: 1,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(), labelText: 'Members'),
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(4)
-                ],
-                onChanged: (value) {
-                  BlocProvider.of<WodCreateBloc>(context).add(
-                      TypeMemberCount(
-                          value.isNotEmpty ? int.parse(value) : 0));
-                },
-              ),
-            )
+                    child: TextField(
+                      maxLines: 1,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), labelText: 'Members'),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(4)
+                      ],
+                      onChanged: (value) {
+                        BlocProvider.of<WodCreateBloc>(context).add(
+                            TypeMemberCount(
+                                value.isNotEmpty ? int.parse(value) : 0));
+                      },
+                    ),
+                  )
           ],
         );
       },
@@ -208,10 +212,7 @@ class WodCreateScreen extends StatelessWidget {
 
         return Wrap(
           runSpacing: 1.0,
-          children: state.wod.movements
-              .asMap()
-              .entries
-              .map((entry) {
+          children: state.wod.movements.asMap().entries.map((entry) {
             return InputChip(
               // padding: const EdgeInsets.all(7),
               label: Center(child: Text(entry.value)),
@@ -240,9 +241,7 @@ class WodCreateScreen extends StatelessWidget {
 
     return BlocBuilder<WodCreateBloc, WodCreateState>(
       builder: (context, state) {
-        final ColorScheme colors = Theme
-            .of(context)
-            .colorScheme;
+        final ColorScheme colors = Theme.of(context).colorScheme;
 
         return Row(
           children: [
@@ -257,13 +256,13 @@ class WodCreateScreen extends StatelessWidget {
                 decoration: InputDecoration(
                     suffixIcon: state.movement.isNotEmpty
                         ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        BlocProvider.of<WodCreateBloc>(context)
-                            .add(const TypeWodMovement(""));
-                        textEditingController.clear();
-                      },
-                    )
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              BlocProvider.of<WodCreateBloc>(context)
+                                  .add(const TypeWodMovement(""));
+                              textEditingController.clear();
+                            },
+                          )
                         : null,
                     border: const OutlineInputBorder(),
                     labelText: 'ex) 15 power snatch, 95lbs',
@@ -288,6 +287,56 @@ class WodCreateScreen extends StatelessWidget {
               ),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  Widget _buildInstructionsTitleSection() {
+    return BlocBuilder<WodCreateBloc, WodCreateState>(
+      builder: (context, state) {
+        final ThemeData themeData = Theme.of(context);
+
+        return Container(
+          decoration: BoxDecoration(
+              color: themeData.colorScheme.onTertiaryContainer,
+              borderRadius: const BorderRadius.all(Radius.circular(8))),
+          padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
+          child: Text("Instructions",
+              style: themeData.textTheme.bodyLarge
+                  ?.copyWith(color: themeData.colorScheme.onPrimary)),
+        );
+      },
+    );
+  }
+
+  Widget _buildInstructionsSection() {
+    TextEditingController textEditingController = TextEditingController();
+
+    return BlocBuilder<WodCreateBloc, WodCreateState>(
+      builder: (context, state) {
+        return TextField(
+          keyboardType: TextInputType.multiline,
+          controller: textEditingController,
+          onChanged: (value) {
+            BlocProvider.of<WodCreateBloc>(context)
+                .add(TypeInstructions(value));
+          },
+          maxLines: 8,
+          decoration: InputDecoration(
+            suffixIcon: state.wod.instructions.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      BlocProvider.of<WodCreateBloc>(context)
+                          .add(const TypeInstructions(""));
+                      textEditingController.clear();
+                    },
+                  )
+                : null,
+            border: const OutlineInputBorder(),
+            // labelText: 'Time / Rounds / Etc',
+          ),
         );
       },
     );

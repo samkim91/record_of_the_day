@@ -38,11 +38,11 @@ class WodItemWidget extends StatelessWidget {
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: wod.movements.map((e) => Text("- $e")).toList(),
+                  children: wod.movements
+                      .map((e) =>
+                          Text("- $e", style: themeData.textTheme.bodyLarge))
+                      .toList(),
                 ),
-                // const SizedBox(height: 4),
-                // Text(DateFormat("yy.MM.dd").format(wod.createdAt!),
-                //     style: themeData.textTheme.caption),
               ],
             ),
           )),

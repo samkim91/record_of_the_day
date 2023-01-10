@@ -11,6 +11,7 @@ class Wod extends Equatable {
   final ParticipationType participationType;
   final int memberCount;
   final List<String> movements;
+  final String instructions;
   final bool isActive;
 
   // TODO: 2023/01/05 records
@@ -23,6 +24,7 @@ class Wod extends Equatable {
     this.participationType = ParticipationType.individual,
     this.memberCount = 0,
     this.movements = const <String>[],
+    this.instructions = "",
     this.isActive = true,
   });
 
@@ -35,6 +37,7 @@ class Wod extends Equatable {
         participationType,
         memberCount,
         movements,
+        instructions,
         isActive,
       ];
 
@@ -46,6 +49,7 @@ class Wod extends Equatable {
     ParticipationType? participationType,
     int? memberCount,
     List<String>? movements,
+    String? instructions,
     bool? isActive,
   }) {
     return Wod(
@@ -56,6 +60,7 @@ class Wod extends Equatable {
       participationType: participationType ?? this.participationType,
       memberCount: memberCount ?? this.memberCount,
       movements: movements ?? this.movements,
+      instructions: instructions ?? this.instructions,
       isActive: isActive ?? this.isActive,
     );
   }
@@ -81,6 +86,7 @@ class Wod extends Equatable {
       movements: data?["movements"] is Iterable
           ? List.from(data?["movements"])
           : <String>[],
+      instructions: data?["instructions"],
       isActive: data?["isActive"],
     );
   }
@@ -93,6 +99,7 @@ class Wod extends Equatable {
       "participationType": participationType.text,
       "memberCount": memberCount,
       "movements": movements,
+      "instructions": instructions,
       "isActive": isActive,
     };
   }

@@ -70,6 +70,15 @@ class ClickDeleteWodMovement extends WodCreateEvent {
   List<Object> get props => [index];
 }
 
+class TypeInstructions extends WodCreateEvent {
+  final String instructions;
+
+  const TypeInstructions(this.instructions);
+
+  @override
+  List<Object> get props => [instructions];
+}
+
 class SaveWod extends WodCreateEvent {
   const SaveWod();
 }
