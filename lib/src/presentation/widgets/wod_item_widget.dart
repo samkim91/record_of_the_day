@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:way_to_fit/src/core/config/logger.dart';
 import 'package:way_to_fit/src/data/models/wod.dart';
 import 'package:way_to_fit/src/domain/entities/participation_type.dart';
@@ -41,9 +40,9 @@ class WodItemWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: wod.movements.map((e) => Text("- $e")).toList(),
                 ),
-                const SizedBox(height: 4),
-                Text(DateFormat("yy.MM.dd").format(wod.createdAt!),
-                    style: themeData.textTheme.caption),
+                // const SizedBox(height: 4),
+                // Text(DateFormat("yy.MM.dd").format(wod.createdAt!),
+                //     style: themeData.textTheme.caption),
               ],
             ),
           )),

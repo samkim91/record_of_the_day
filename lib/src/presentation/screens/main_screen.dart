@@ -53,7 +53,7 @@ class MainScreen extends StatelessWidget {
         return FloatingActionButton(
             child: const Icon(Icons.add), onPressed: () => {});
       }
-      return Container();
+      return const SizedBox();
     });
   }
 

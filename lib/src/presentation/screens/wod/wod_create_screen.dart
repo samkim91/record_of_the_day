@@ -44,16 +44,19 @@ class WodCreateScreen extends StatelessWidget {
       listener: (context, state) {
         if (state.status.isProcessing) {
           EasyLoading.show(status: "Saving...");
-        } else if (state.status.isSuccess) {
+        }
+        if (state.status.isSuccess) {
           EasyLoading.showSuccess("Saved!");
 
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => WodReadScreen(wodId: state.wod.id!)));
-        } else if (state.status.isError) {
+        }
+        if (state.status.isError) {
           EasyLoading.showError(state.error);
-        } else {
+        }
+        if (state.status.isInitial) {
           EasyLoading.dismiss();
         }
       },
@@ -61,16 +64,14 @@ class WodCreateScreen extends StatelessWidget {
         margin: const EdgeInsets.only(left: 20.0, right: 20.0),
         child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
-              _buildWodTypeSection(),
-              const SizedBox(height: 20),
-              _buildWodTypeSubSection(),
-              const SizedBox(height: 20),
               _buildParticipationTypeSection(),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
+              _buildWodTypeSection(),
+              const SizedBox(height: 10),
+              _buildWodTypeDetailSection(),
+              const SizedBox(height: 30),
               _buildWodDetailsTitleSection(),
               const SizedBox(height: 10),
               _buildWodDetailsSection(),
@@ -102,7 +103,7 @@ class WodCreateScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWodTypeSubSection() {
+  Widget _buildWodTypeDetailSection() {
     TextEditingController textEditingController = TextEditingController();
 
     return BlocBuilder<WodCreateBloc, WodCreateState>(
@@ -117,13 +118,13 @@ class WodCreateScreen extends StatelessWidget {
           decoration: InputDecoration(
             suffixIcon: state.wod.typeDetail.isNotEmpty
                 ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      BlocProvider.of<WodCreateBloc>(context)
-                          .add(const TypeWodTypeDetail(""));
-                      textEditingController.clear();
-                    },
-                  )
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                BlocProvider.of<WodCreateBloc>(context)
+                    .add(const TypeWodTypeDetail(""));
+                textEditingController.clear();
+              },
+            )
                 : null,
             border: const OutlineInputBorder(),
             labelText: 'Time / Rounds / Etc',
@@ -156,29 +157,26 @@ class WodCreateScreen extends StatelessWidget {
                 return Text(participationType.text);
               }).toList(),
             ),
+            const SizedBox(width: 10),
             state.wod.participationType == ParticipationType.individual
-                ? Container()
-                : const SizedBox(width: 10),
-            // const SizedBox(width: 10),
-            state.wod.participationType == ParticipationType.individual
-                ? Container()
+                ? const SizedBox()
                 : Expanded(
-                    child: TextField(
-                      maxLines: 1,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), labelText: 'Members'),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(4)
-                      ],
-                      onChanged: (value) {
-                        BlocProvider.of<WodCreateBloc>(context).add(
-                            TypeMemberCount(
-                                value.isNotEmpty ? int.parse(value) : 0));
-                      },
-                    ),
-                  )
+              child: TextField(
+                maxLines: 1,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Members'),
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(4)
+                ],
+                onChanged: (value) {
+                  BlocProvider.of<WodCreateBloc>(context).add(
+                      TypeMemberCount(
+                          value.isNotEmpty ? int.parse(value) : 0));
+                },
+              ),
+            )
           ],
         );
       },
@@ -206,23 +204,24 @@ class WodCreateScreen extends StatelessWidget {
   Widget _buildWodDetailsSection() {
     return BlocBuilder<WodCreateBloc, WodCreateState>(
       builder: (context, state) {
-        final ColorScheme colors = Theme.of(context).colorScheme;
+        final ThemeData themeData = Theme.of(context);
 
         return Wrap(
           runSpacing: 1.0,
-          children: state.wod.movements.asMap().entries.map((entry) {
+          children: state.wod.movements
+              .asMap()
+              .entries
+              .map((entry) {
             return InputChip(
               // padding: const EdgeInsets.all(7),
               label: Center(child: Text(entry.value)),
               avatar: CircleAvatar(
-                foregroundColor: colors.onPrimary,
-                backgroundColor: colors.primary,
+                foregroundColor: themeData.colorScheme.onPrimary,
+                backgroundColor: themeData.colorScheme.primary,
                 child: Text(
                   (entry.key + 1).toString(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelSmall
-                      ?.copyWith(color: colors.onPrimary),
+                  style: themeData.textTheme.labelSmall
+                      ?.copyWith(color: themeData.colorScheme.onPrimary),
                 ),
               ),
               onDeleted: () {
@@ -241,7 +240,9 @@ class WodCreateScreen extends StatelessWidget {
 
     return BlocBuilder<WodCreateBloc, WodCreateState>(
       builder: (context, state) {
-        final ColorScheme colors = Theme.of(context).colorScheme;
+        final ColorScheme colors = Theme
+            .of(context)
+            .colorScheme;
 
         return Row(
           children: [
@@ -256,13 +257,13 @@ class WodCreateScreen extends StatelessWidget {
                 decoration: InputDecoration(
                     suffixIcon: state.movement.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              BlocProvider.of<WodCreateBloc>(context)
-                                  .add(const TypeWodMovement(""));
-                              textEditingController.clear();
-                            },
-                          )
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        BlocProvider.of<WodCreateBloc>(context)
+                            .add(const TypeWodMovement(""));
+                        textEditingController.clear();
+                      },
+                    )
                         : null,
                     border: const OutlineInputBorder(),
                     labelText: 'ex) 15 power snatch, 95lbs',

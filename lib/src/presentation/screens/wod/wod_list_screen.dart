@@ -29,9 +29,7 @@ class WodListScreen extends StatelessWidget {
         scrollController.addListener(() => _onScroll(context));
 
         if (state.status.isInitial) {
-          EasyLoading.show();
           BlocProvider.of<WodListBloc>(context).add(const GetWods());
-
           return const SizedBox();
         }
         if (state.status.isError) {
@@ -41,34 +39,30 @@ class WodListScreen extends StatelessWidget {
             child: Text("Failed to load wods: ${state.error}"),
           );
         }
-        if (state.status.isSuccess || state.status.isProcessing) {
-          state.status.isProcessing
-              ? EasyLoading.show()
-              : EasyLoading.dismiss();
 
-          return SafeArea(
-            child: RefreshIndicator(
-              onRefresh: () => _onRefresh(context),
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: state.wods.length,
-                itemBuilder: (context, index) {
-                  return WodItemWidget(
-                      wod: state.wods[index],
-                      onClickWod: () => _onClickWod(context, ""));
-                },
-              ),
+        state.status.isProcessing ? EasyLoading.show() : EasyLoading.dismiss();
+
+        return SafeArea(
+          child: RefreshIndicator(
+            onRefresh: () => _onRefresh(context),
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: state.wods.length,
+              itemBuilder: (context, index) {
+                return WodItemWidget(
+                    wod: state.wods[index],
+                    onClickWod: () =>
+                        _onClickWod(context, state.wods[index].id!));
+              },
             ),
-          );
-        }
-
-        return const SizedBox();
+          ),
+        );
       },
     );
   }
 
   void _onClickWod(BuildContext context, String id) {
-    logger.d('_onClickWod: ');
+    logger.d('_onClickWod: $id');
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => WodReadScreen(wodId: id)));
   }

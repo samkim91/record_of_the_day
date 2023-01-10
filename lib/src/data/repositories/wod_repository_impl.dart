@@ -5,9 +5,9 @@ import 'package:way_to_fit/src/domain/repositories/wod_repository.dart';
 
 class WodRepositoryImpl implements WodRepository {
   final database = firestore.collection(Collections.wods.name).withConverter(
-    fromFirestore: Wod.fromFirestore,
-    toFirestore: (Wod wod, options) => wod.toFirestore(),
-  );
+        fromFirestore: Wod.fromFirestore,
+        toFirestore: (Wod wod, options) => wod.toFirestore(),
+      );
 
   @override
   Future<Wod> createWod(Wod wod) async {
@@ -26,6 +26,7 @@ class WodRepositoryImpl implements WodRepository {
     if (wod != null) {
       return wod;
     } else {
+      logger.e("readWod: Not found");
       throw NullThrownError();
     }
   }
