@@ -32,7 +32,7 @@ class WodListScreen extends StatelessWidget {
           EasyLoading.show();
           BlocProvider.of<WodListBloc>(context).add(const GetWods());
 
-          return Container();
+          return const SizedBox();
         }
         if (state.status.isError) {
           EasyLoading.dismiss();
@@ -46,21 +46,23 @@ class WodListScreen extends StatelessWidget {
               ? EasyLoading.show()
               : EasyLoading.dismiss();
 
-          return RefreshIndicator(
-            onRefresh: () => _onRefresh(context),
-            child: ListView.builder(
-              controller: scrollController,
-              itemCount: state.wods.length,
-              itemBuilder: (context, index) {
-                return WodItemWidget(
-                    wod: state.wods[index],
-                    onClickWod: () => _onClickWod(context, ""));
-              },
+          return SafeArea(
+            child: RefreshIndicator(
+              onRefresh: () => _onRefresh(context),
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: state.wods.length,
+                itemBuilder: (context, index) {
+                  return WodItemWidget(
+                      wod: state.wods[index],
+                      onClickWod: () => _onClickWod(context, ""));
+                },
+              ),
             ),
           );
         }
 
-        return Container();
+        return const SizedBox();
       },
     );
   }

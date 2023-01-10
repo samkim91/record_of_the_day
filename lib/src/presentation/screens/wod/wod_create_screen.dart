@@ -47,12 +47,10 @@ class WodCreateScreen extends StatelessWidget {
         } else if (state.status.isSuccess) {
           EasyLoading.showSuccess("Saved!");
 
-          if (state.wod.id != null) {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => WodReadScreen(wodId: state.wod.id!)));
-          }
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => WodReadScreen(wodId: state.wod.id!)));
         } else if (state.status.isError) {
           EasyLoading.showError(state.error);
         } else {

@@ -25,7 +25,6 @@ class WodItemWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ActionChip(
                         label: wod.participationType ==
@@ -33,15 +32,18 @@ class WodItemWidget extends StatelessWidget {
                             ? Text(wod.participationType.text)
                             : Text(
                                 "${wod.participationType.text} of ${wod.memberCount}")),
-                    Text("${wod.type.text} - ${wod.typeDetail}",
+                    const SizedBox(width: 10),
+                    Text("${wod.type.text} ${wod.typeDetail}",
                         style: themeData.textTheme.titleMedium),
-                    Text(DateFormat("yy.MM.dd").format(wod.createdAt!)),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: wod.movements.map((e) => Text("- $e")).toList(),
                 ),
+                const SizedBox(height: 4),
+                Text(DateFormat("yy.MM.dd").format(wod.createdAt!),
+                    style: themeData.textTheme.caption),
               ],
             ),
           )),
