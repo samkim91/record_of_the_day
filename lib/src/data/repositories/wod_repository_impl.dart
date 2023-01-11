@@ -4,21 +4,22 @@ import 'package:way_to_fit/src/data/models/wod.dart';
 import 'package:way_to_fit/src/domain/repositories/wod_repository.dart';
 
 class WodRepositoryImpl implements WodRepository {
-  final database = firestore.collection(Collections.wods.name).withConverter(
-        fromFirestore: Wod.fromFirestore,
-        toFirestore: (Wod wod, options) => wod.toFirestore(),
-      );
+  final wodCollection =
+      firestore.collection(Collections.wods.name).withConverter(
+            fromFirestore: Wod.fromFirestore,
+            toFirestore: (Wod wod, options) => wod.toFirestore(),
+          );
 
   @override
   Future<Wod> createWod(Wod wod) async {
-    final result = await database.add(wod);
+    final result = await wodCollection.add(wod);
 
     return wod.copyWith(id: result.id);
   }
 
   @override
   Future<Wod> readWod(String id) async {
-    final reference = database.doc(id);
+    final reference = wodCollection.doc(id);
 
     final docSnap = await reference.get();
     final wod = docSnap.data();
@@ -35,7 +36,7 @@ class WodRepositoryImpl implements WodRepository {
   Future<List<Wod>> readWods(Wod? lastWod, int pageSize) async {
     logger.d("readWods: $lastWod");
 
-    final query = database
+    final query = wodCollection
         .where("isActive", isEqualTo: true)
         .orderBy("createdAt", descending: true);
 

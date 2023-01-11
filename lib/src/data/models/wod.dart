@@ -15,6 +15,7 @@ class Wod extends Equatable {
   final bool isActive;
 
   // TODO: 2023/01/05 records
+  // TODO: 2023/01/11 createdBy (User)
 
   const Wod({
     this.id,
@@ -70,6 +71,7 @@ class Wod extends Equatable {
     SnapshotOptions? options,
   ) {
     final data = snapshot.data();
+
     return Wod(
       id: snapshot.id,
       createdAt: data?["createdAt"].toDate(),

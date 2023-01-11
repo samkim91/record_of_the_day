@@ -9,6 +9,10 @@ import 'package:way_to_fit/src/presentation/blocs/navigation/navigation_cubit.da
 import 'package:way_to_fit/src/presentation/blocs/wod/create/wod_create_bloc.dart';
 import 'package:way_to_fit/src/presentation/blocs/wod/list/wod_list_bloc.dart';
 import 'package:way_to_fit/src/presentation/blocs/wod/read/wod_read_bloc.dart';
+import 'package:way_to_fit/src/presentation/blocs/wod/record/list/record_list_bloc.dart';
+
+import 'data/repositories/record_repository_impl.dart';
+import 'domain/repositories/record_repository.dart';
 
 final injector = GetIt.instance;
 
@@ -21,12 +25,14 @@ Future<void> initializeDependencies() async {
   // Repositories
   injector.registerSingleton<AuthRepository>(AuthRepositoryImpl());
   injector.registerSingleton<WodRepository>(WodRepositoryImpl());
+  injector.registerSingleton<RecordRepository>(RecordRepositoryImpl());
 
   // Blocs
   injector.registerFactory<AuthBloc>(() => AuthBloc(injector()));
   injector.registerFactory<WodCreateBloc>(() => WodCreateBloc(injector()));
   injector.registerFactory<WodReadBloc>(() => WodReadBloc(injector()));
   injector.registerFactory<WodListBloc>(() => WodListBloc(injector()));
+  injector.registerFactory<RecordListBloc>(() => RecordListBloc(injector()));
 
   // Presentation
   injector.registerSingleton<NavigationCubit>(NavigationCubit());

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:way_to_fit/src/core/config/logger.dart';
 import 'package:way_to_fit/src/data/models/wod.dart';
 import 'package:way_to_fit/src/domain/entities/participation_type.dart';
 
@@ -15,7 +14,7 @@ class WodItemWidget extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     return GestureDetector(
-      onTap: _onTap,
+      onTap: () => onClickWod(),
       child: Card(
           margin: const EdgeInsets.fromLTRB(8, 4, 8, 4),
           child: Padding(
@@ -47,10 +46,5 @@ class WodItemWidget extends StatelessWidget {
             ),
           )),
     );
-  }
-
-  void _onTap() {
-    logger.d('_onTap: ');
-    onClickWod();
   }
 }
