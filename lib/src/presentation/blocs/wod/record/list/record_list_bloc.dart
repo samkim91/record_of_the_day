@@ -35,10 +35,10 @@ class RecordListBloc extends Bloc<RecordListEvent, RecordListState> {
       final List<Record> records =
           await _recordRepository.readRecords(event.id);
 
-      List<Record> addedRecords = List.from(state.records)..addAll(records);
+      // TODO: 2023/01/11 추후 페이지네이션 적용
+      // List<Record> addedRecords = List.from(state.records)..addAll(records);
 
-      emit(
-          state.copyWith(records: addedRecords, status: NetworkStatus.success));
+      emit(state.copyWith(records: records, status: NetworkStatus.success));
     } catch (e) {
       emit(state.copyWith(status: NetworkStatus.error, error: e.toString()));
     }

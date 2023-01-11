@@ -133,7 +133,6 @@ class WodCreateScreen extends StatelessWidget {
             border: const OutlineInputBorder(),
             labelText: 'Time / Rounds / Etc',
             errorText: state.isValidTypeDetail ? null : 'Fill this form',
-            // errorText: state.wodTypeSub.isEmpty ? 'Fill this content' : null
           ),
         );
       },

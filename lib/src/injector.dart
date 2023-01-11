@@ -13,6 +13,7 @@ import 'package:way_to_fit/src/presentation/blocs/wod/record/list/record_list_bl
 
 import 'data/repositories/record_repository_impl.dart';
 import 'domain/repositories/record_repository.dart';
+import 'presentation/blocs/wod/record/create/record_create_bloc.dart';
 
 final injector = GetIt.instance;
 
@@ -33,6 +34,8 @@ Future<void> initializeDependencies() async {
   injector.registerFactory<WodReadBloc>(() => WodReadBloc(injector()));
   injector.registerFactory<WodListBloc>(() => WodListBloc(injector()));
   injector.registerFactory<RecordListBloc>(() => RecordListBloc(injector()));
+  injector
+      .registerFactory<RecordCreateBloc>(() => RecordCreateBloc(injector()));
 
   // Presentation
   injector.registerSingleton<NavigationCubit>(NavigationCubit());

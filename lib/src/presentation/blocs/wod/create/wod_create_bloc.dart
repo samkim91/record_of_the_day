@@ -104,6 +104,15 @@ class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
         wod: updatedWod, isValidMovements: wodDetails.isNotEmpty));
   }
 
+  FutureOr<void> _onChangeInstructions(
+      TypeInstructions event, Emitter<WodCreateState> emit) {
+    logger.d('_onChangeInstructions ${event.instructions}');
+
+    final Wod updatedWod = state.wod.copyWith(instructions: event.instructions);
+
+    emit(state.copyWith(wod: updatedWod));
+  }
+
   FutureOr<void> _onSaveWod(SaveWod event, Emitter<WodCreateState> emit) async {
     logger.d('_wodCreate: ');
 
@@ -123,14 +132,5 @@ class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
     } catch (e) {
       emit(state.copyWith(status: NetworkStatus.error, error: e.toString()));
     }
-  }
-
-  FutureOr<void> _onChangeInstructions(
-      TypeInstructions event, Emitter<WodCreateState> emit) {
-    logger.d('_onChangeInstructions ${event.instructions}');
-
-    final Wod updatedWod = state.wod.copyWith(instructions: event.instructions);
-
-    emit(state.copyWith(wod: updatedWod));
   }
 }

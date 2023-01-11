@@ -7,6 +7,7 @@ import 'package:way_to_fit/src/injector.dart';
 import 'package:way_to_fit/src/presentation/blocs/wod/read/wod_read_bloc.dart';
 import 'package:way_to_fit/src/presentation/blocs/wod/record/list/record_list_bloc.dart';
 import 'package:way_to_fit/src/presentation/widgets/record_item_widget.dart';
+import 'package:way_to_fit/src/presentation/widgets/record_save_bottom_sheet.dart';
 
 class WodReadScreen extends StatelessWidget {
   final String wodId;
@@ -56,12 +57,14 @@ class WodReadScreen extends StatelessWidget {
   Widget _buildBody() {
     return Container(
       margin: const EdgeInsets.only(left: 20.0, right: 20.0),
-      child: Column(
-        children: [
-          _buildWodSection(),
-          const SizedBox(height: 30),
-          _buildRecordsSection(),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildWodSection(),
+            const SizedBox(height: 30),
+            _buildRecordsSection(),
+          ],
+        ),
       ),
     );
   }
@@ -108,8 +111,26 @@ class WodReadScreen extends StatelessWidget {
   }
 
   Widget _buildFloatingActionButton() {
-    return FloatingActionButton(
-        child: const Icon(Icons.add), onPressed: () => {});
+    return BlocBuilder<RecordListBloc, RecordListState>(
+      builder: (context, state) {
+        return FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(20))),
+              builder: (context) {
+                return RecordSaveBottomSheet(wodId: wodId);
+              },
+            ).then((value) => BlocProvider.of<RecordListBloc>(context)
+                .add(GetRecords(wodId)));
+          },
+        );
+      },
+    );
   }
 
   Widget _buildParticipationTypeSection() {
@@ -238,12 +259,14 @@ class WodReadScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ListView.builder(
                 shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: state.records.length,
                 itemBuilder: (context, index) {
                   return RecordItemWidget(
                       record: state.records[index],
                       onClickMore: () => _onClickMore());
-                })
+                }),
+            const SizedBox(height: 100),
           ],
         );
       },
