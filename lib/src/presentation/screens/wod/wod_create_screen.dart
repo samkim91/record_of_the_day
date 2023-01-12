@@ -211,12 +211,8 @@ class WodCreateScreen extends StatelessWidget {
           runSpacing: 1.0,
           children: state.wod.movements.asMap().entries.map((entry) {
             return InputChip(
-              backgroundColor: themeData.colorScheme.background,
+              backgroundColor: themeData.colorScheme.primary,
               label: Center(child: Text(entry.value)),
-              avatar: CircleAvatar(
-                child: Text((entry.key + 1).toString(),
-                    style: themeData.textTheme.labelSmall),
-              ),
               onDeleted: () {
                 BlocProvider.of<WodCreateBloc>(context)
                     .add(ClickDeleteWodMovement(entry.key));

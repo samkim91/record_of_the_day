@@ -13,13 +13,11 @@ class RecordItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.only(left: 10),
-      child: Column(
-        children: [
-          Row(
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.only(left: 10),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(DateFormat("yy/M/dd").format(record.createdAt!)),
@@ -29,11 +27,11 @@ class RecordItemWidget extends StatelessWidget {
                   icon: const Icon(Icons.more_vert)),
             ],
           ),
-          const Divider(
-            thickness: 0.5,
-          ),
-        ],
-      ),
+        ),
+        const Divider(
+          thickness: 0.5,
+        ),
+      ],
     );
   }
 }

@@ -100,7 +100,7 @@ class WodReadScreen extends StatelessWidget {
             _buildParticipationTypeSection(),
             const SizedBox(height: 10),
             _buildWodTypeSection(),
-            const SizedBox(height: 30),
+            const SizedBox(height: 10),
             _buildWodDetailsSection(),
             const SizedBox(height: 30),
             _buildInstructionsSection(),
@@ -161,8 +161,6 @@ class WodReadScreen extends StatelessWidget {
   Widget _buildWodDetailsSection() {
     return BlocBuilder<WodReadBloc, WodReadState>(
       builder: (context, state) {
-        final ThemeData themeData = Theme.of(context);
-
         return Column(
           children: [
             Wrap(
@@ -170,10 +168,6 @@ class WodReadScreen extends StatelessWidget {
               children: state.wod.movements.asMap().entries.map((entry) {
                 return ActionChip(
                   label: Center(child: Text(entry.value)),
-                  avatar: CircleAvatar(
-                    child: Text((entry.key + 1).toString(),
-                        style: themeData.textTheme.labelSmall),
-                  ),
                 );
               }).toList(),
             ),

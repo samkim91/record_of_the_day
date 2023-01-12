@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
             home: home,
             theme: ThemeData(
                 // colorSchemeSeed: const Color(0xFF000000),
-                // colorSchemeSeed: Colors.black,
+                colorSchemeSeed: Colors.black,
                 // primarySwatch: primaryBlack,
                 useMaterial3: true,
                 splashFactory: NoSplash.splashFactory),
