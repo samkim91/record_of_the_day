@@ -1,0 +1,4 @@
+enum HeightType {
+  cm,
+  inch;
+}

@@ -13,25 +13,18 @@ class RecordItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.only(left: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(DateFormat("yy/M/dd").format(record.createdAt!)),
-              Text(record.result),
-              IconButton(
-                  onPressed: () => onClickMore(),
-                  icon: const Icon(Icons.more_vert)),
-            ],
-          ),
-        ),
-        const Divider(
-          thickness: 0.5,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(DateFormat("yy/M/dd").format(record.createdAt!)),
+          Text(record.result),
+          IconButton(
+              onPressed: () => onClickMore(),
+              icon: const Icon(Icons.more_vert)),
+        ],
+      ),
     );
   }
 }

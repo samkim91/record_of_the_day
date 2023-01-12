@@ -14,7 +14,6 @@ class Wod extends Equatable {
   final String instructions;
   final bool isActive;
 
-  // TODO: 2023/01/05 records
   // TODO: 2023/01/11 createdBy (User)
 
   const Wod({

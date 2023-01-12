@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:way_to_fit/src/data/repositories/wod_repository_impl.dart';
 import 'package:way_to_fit/src/domain/repositories/record_repository.dart';
 
 import '../../core/config/network.dart';
@@ -7,8 +8,7 @@ import '../models/record.dart';
 class RecordRepositoryImpl implements RecordRepository {
   @override
   Future<void> createRecord(String wodId, Record record) async {
-    final recordCollection = firestore
-        .collection(Collections.wods.name)
+    final CollectionReference<Record> recordCollection = wodCollection
         .doc(wodId)
         .collection(Collections.records.name)
         .withConverter(
@@ -20,8 +20,7 @@ class RecordRepositoryImpl implements RecordRepository {
 
   @override
   Future<List<Record>> readRecords(String wodId) async {
-    final recordCollection = firestore
-        .collection(Collections.wods.name)
+    final CollectionReference<Record> recordCollection = wodCollection
         .doc(wodId)
         .collection(Collections.records.name)
         .withConverter(
@@ -35,8 +34,7 @@ class RecordRepositoryImpl implements RecordRepository {
 
   @override
   Future<void> updateRecord(String wodId, Record record) async {
-    final recordCollection = firestore
-        .collection(Collections.wods.name)
+    final CollectionReference<Record> recordCollection = wodCollection
         .doc(wodId)
         .collection(Collections.records.name)
         .withConverter(

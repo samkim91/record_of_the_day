@@ -1,0 +1,4 @@
+enum WeightType {
+  kg,
+  lb;
+}
