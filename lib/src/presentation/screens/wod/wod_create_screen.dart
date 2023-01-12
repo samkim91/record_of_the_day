@@ -61,31 +61,87 @@ class WodCreateScreen extends StatelessWidget {
         }
       },
       child: Container(
-        margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+        margin: const EdgeInsets.only(left: 12.0, right: 12.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 20),
-              _buildParticipationTypeSection(),
-              const SizedBox(height: 30),
-              _buildWodTypeSection(),
-              const SizedBox(height: 10),
-              _buildWodTypeDetailSection(),
-              const SizedBox(height: 30),
-              _buildWodDetailsTitleSection(),
-              const SizedBox(height: 10),
-              _buildWodDetailsSection(),
-              const SizedBox(height: 10),
-              _buildWodDetailAddSection(),
-              const SizedBox(height: 30),
-              _buildInstructionsTitleSection(),
-              const SizedBox(height: 20),
+              const SizedBox(height: 8),
+              _buildWodSection(),
+              const SizedBox(height: 12),
               _buildInstructionsSection(),
               const SizedBox(height: 20),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildWodSection() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          children: [
+            _buildParticipationTypeSection(),
+            const SizedBox(height: 8),
+            _buildWodTypeSection(),
+            const SizedBox(height: 8),
+            _buildWodTypeDetailSection(),
+            const SizedBox(height: 12),
+            _buildWodDetailsSection(),
+            const SizedBox(height: 8),
+            _buildWodDetailAddSection(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildParticipationTypeSection() {
+    return BlocBuilder<WodCreateBloc, WodCreateState>(
+      builder: (context, state) {
+        return Row(
+          children: [
+            ToggleButtons(
+              isSelected: ParticipationType.values
+                  .map((ParticipationType participationType) {
+                return participationType == state.wod.participationType;
+              }).toList(),
+              constraints: const BoxConstraints.expand(height: 60, width: 80),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+              onPressed: (int index) {
+                BlocProvider.of<WodCreateBloc>(context).add(
+                    SelectParticipationType(ParticipationType.values[index]));
+              },
+              children: ParticipationType.values
+                  .map((ParticipationType participationType) {
+                return Text(participationType.text);
+              }).toList(),
+            ),
+            const SizedBox(width: 10),
+            state.wod.participationType == ParticipationType.individual
+                ? const SizedBox()
+                : Expanded(
+                    child: TextField(
+                      maxLines: 1,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), labelText: 'Members'),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(4)
+                      ],
+                      onChanged: (value) {
+                        BlocProvider.of<WodCreateBloc>(context).add(
+                            TypeMemberCount(
+                                value.isNotEmpty ? int.parse(value) : 0));
+                      },
+                    ),
+                  )
+          ],
+        );
+      },
     );
   }
 
@@ -139,86 +195,28 @@ class WodCreateScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildParticipationTypeSection() {
-    return BlocBuilder<WodCreateBloc, WodCreateState>(
-      builder: (context, state) {
-        return Row(
-          children: [
-            ToggleButtons(
-              isSelected: ParticipationType.values
-                  .map((ParticipationType participationType) {
-                return participationType == state.wod.participationType;
-              }).toList(),
-              constraints: const BoxConstraints.expand(height: 60, width: 80),
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              onPressed: (int index) {
-                BlocProvider.of<WodCreateBloc>(context).add(
-                    SelectParticipationType(ParticipationType.values[index]));
-              },
-              children: ParticipationType.values
-                  .map((ParticipationType participationType) {
-                return Text(participationType.text);
-              }).toList(),
-            ),
-            const SizedBox(width: 10),
-            state.wod.participationType == ParticipationType.individual
-                ? const SizedBox()
-                : Expanded(
-                    child: TextField(
-                      maxLines: 1,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), labelText: 'Members'),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(4)
-                      ],
-                      onChanged: (value) {
-                        BlocProvider.of<WodCreateBloc>(context).add(
-                            TypeMemberCount(
-                                value.isNotEmpty ? int.parse(value) : 0));
-                      },
-                    ),
-                  )
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildWodDetailsTitleSection() {
-    return BlocBuilder<WodCreateBloc, WodCreateState>(
-      builder: (context, state) {
-        final ThemeData themeData = Theme.of(context);
-
-        return Container(
-          decoration: BoxDecoration(
-              color: themeData.colorScheme.background,
-              borderRadius: const BorderRadius.all(Radius.circular(8))),
-          padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
-          child: Text("Movements", style: themeData.textTheme.bodyLarge),
-        );
-      },
-    );
-  }
-
   Widget _buildWodDetailsSection() {
     return BlocBuilder<WodCreateBloc, WodCreateState>(
       builder: (context, state) {
         final ThemeData themeData = Theme.of(context);
 
-        return Wrap(
-          runSpacing: 1.0,
-          children: state.wod.movements.asMap().entries.map((entry) {
-            return InputChip(
-              backgroundColor: themeData.colorScheme.primary,
-              label: Center(child: Text(entry.value)),
-              onDeleted: () {
-                BlocProvider.of<WodCreateBloc>(context)
-                    .add(ClickDeleteWodMovement(entry.key));
-              },
-            );
-          }).toList(),
+        return Column(
+          children: [
+            Text("Movements", style: themeData.textTheme.bodyLarge),
+            Wrap(
+              runSpacing: 1.0,
+              children: state.wod.movements.asMap().entries.map((entry) {
+                return InputChip(
+                  backgroundColor: themeData.colorScheme.primary,
+                  label: Center(child: Text(entry.value)),
+                  onDeleted: () {
+                    BlocProvider.of<WodCreateBloc>(context)
+                        .add(ClickDeleteWodMovement(entry.key));
+                  },
+                );
+              }).toList(),
+            ),
+          ],
         );
       },
     );
@@ -280,48 +278,44 @@ class WodCreateScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInstructionsTitleSection() {
-    return BlocBuilder<WodCreateBloc, WodCreateState>(
-      builder: (context, state) {
-        final ThemeData themeData = Theme.of(context);
-
-        return Container(
-          decoration: BoxDecoration(
-              color: themeData.colorScheme.background,
-              borderRadius: const BorderRadius.all(Radius.circular(8))),
-          padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
-          child: Text("Instructions", style: themeData.textTheme.bodyLarge),
-        );
-      },
-    );
-  }
-
   Widget _buildInstructionsSection() {
     TextEditingController textEditingController = TextEditingController();
 
     return BlocBuilder<WodCreateBloc, WodCreateState>(
       builder: (context, state) {
-        return TextField(
-          keyboardType: TextInputType.multiline,
-          controller: textEditingController,
-          onChanged: (value) {
-            BlocProvider.of<WodCreateBloc>(context)
-                .add(TypeInstructions(value));
-          },
-          maxLines: null,
-          decoration: InputDecoration(
-            suffixIcon: state.wod.instructions.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      BlocProvider.of<WodCreateBloc>(context)
-                          .add(const TypeInstructions(""));
-                      textEditingController.clear();
-                    },
-                  )
-                : null,
-            border: const OutlineInputBorder(),
-            // labelText: 'Time / Rounds / Etc',
+        final ThemeData themeData = Theme.of(context);
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              children: [
+                Text("Instructions", style: themeData.textTheme.bodyLarge),
+                const SizedBox(height: 8.0),
+                TextField(
+                  keyboardType: TextInputType.multiline,
+                  controller: textEditingController,
+                  onChanged: (value) {
+                    BlocProvider.of<WodCreateBloc>(context)
+                        .add(TypeInstructions(value));
+                  },
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    suffixIcon: state.wod.instructions.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              BlocProvider.of<WodCreateBloc>(context)
+                                  .add(const TypeInstructions(""));
+                              textEditingController.clear();
+                            },
+                          )
+                        : null,
+                    border: const OutlineInputBorder(),
+                    // labelText: 'Time / Rounds / Etc',
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

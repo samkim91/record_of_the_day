@@ -16,7 +16,7 @@ class RecordItemWidget extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.only(left: 10),
+          padding: const EdgeInsets.only(left: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

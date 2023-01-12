@@ -54,15 +54,40 @@ class WodReadScreen extends StatelessWidget {
     ];
   }
 
+  Widget _buildFloatingActionButton() {
+    return BlocBuilder<RecordListBloc, RecordListState>(
+      builder: (context, state) {
+        return FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(20))),
+              builder: (context) {
+                return RecordSaveBottomSheet(wodId: wodId);
+              },
+            ).then((value) => BlocProvider.of<RecordListBloc>(context)
+                .add(GetRecords(wodId)));
+          },
+        );
+      },
+    );
+  }
+
   Widget _buildBody() {
     return Container(
       margin: const EdgeInsets.only(left: 20.0, right: 20.0),
       child: SingleChildScrollView(
         child: Column(
           children: [
+            const SizedBox(height: 8),
             _buildWodSection(),
-            const SizedBox(height: 30),
+            const SizedBox(height: 12),
             _buildRecordsSection(),
+            const SizedBox(height: 50),
           ],
         ),
       ),
@@ -96,38 +121,27 @@ class WodReadScreen extends StatelessWidget {
 
         return Column(
           children: [
-            const SizedBox(height: 20),
-            _buildParticipationTypeSection(),
-            const SizedBox(height: 10),
-            _buildWodTypeSection(),
-            const SizedBox(height: 10),
-            _buildWodDetailsSection(),
-            const SizedBox(height: 30),
-            _buildInstructionsSection(),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    _buildParticipationTypeSection(),
+                    _buildWodTypeSection(),
+                    const SizedBox(height: 8),
+                    _buildWodDetailsSection(),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: _buildInstructionsSection(),
+              ),
+            )
           ],
-        );
-      },
-    );
-  }
-
-  Widget _buildFloatingActionButton() {
-    return BlocBuilder<RecordListBloc, RecordListState>(
-      builder: (context, state) {
-        return FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              shape: const RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(20))),
-              builder: (context) {
-                return RecordSaveBottomSheet(wodId: wodId);
-              },
-            ).then((value) => BlocProvider.of<RecordListBloc>(context)
-                .add(GetRecords(wodId)));
-          },
         );
       },
     );
@@ -161,17 +175,15 @@ class WodReadScreen extends StatelessWidget {
   Widget _buildWodDetailsSection() {
     return BlocBuilder<WodReadBloc, WodReadState>(
       builder: (context, state) {
+        final ThemeData themeData = Theme.of(context);
+
         return Column(
-          children: [
-            Wrap(
-              runSpacing: 1.0,
-              children: state.wod.movements.asMap().entries.map((entry) {
-                return ActionChip(
-                  label: Center(child: Text(entry.value)),
-                );
-              }).toList(),
-            ),
-          ],
+          children: state.wod.movements.asMap().entries.map((entry) {
+            return Align(
+                alignment: Alignment.centerLeft,
+                child: Text("- ${entry.value}",
+                    style: themeData.textTheme.bodyLarge));
+          }).toList(),
         );
       },
     );
@@ -183,14 +195,7 @@ class WodReadScreen extends StatelessWidget {
 
       return Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-                color: themeData.colorScheme.background,
-                borderRadius: const BorderRadius.all(Radius.circular(8))),
-            padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
-            child: Text("Instructions", style: themeData.textTheme.bodyLarge),
-          ),
-          const SizedBox(height: 10),
+          Text("Instructions", style: themeData.textTheme.bodyLarge),
           TextField(
             controller: TextEditingController(text: state.wod.instructions),
             enabled: false,
@@ -222,27 +227,24 @@ class WodReadScreen extends StatelessWidget {
           return const SizedBox();
         }
 
-        return Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: themeData.colorScheme.background,
-                  borderRadius: const BorderRadius.all(Radius.circular(8))),
-              padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
-              child: Text("Records", style: themeData.textTheme.bodyLarge),
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              children: [
+                Text("Records", style: themeData.textTheme.bodyLarge),
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: state.records.length,
+                    itemBuilder: (context, index) {
+                      return RecordItemWidget(
+                          record: state.records[index],
+                          onClickMore: () => _onClickMore());
+                    }),
+              ],
             ),
-            const SizedBox(height: 10),
-            ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: state.records.length,
-                itemBuilder: (context, index) {
-                  return RecordItemWidget(
-                      record: state.records[index],
-                      onClickMore: () => _onClickMore());
-                }),
-            const SizedBox(height: 100),
-          ],
+          ),
         );
       },
     );
