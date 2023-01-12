@@ -130,6 +130,7 @@ class WodCreateBloc extends Bloc<WodCreateEvent, WodCreateState> {
       final wod = await _wodRepository.createWod(state.wod);
       emit(state.copyWith(wod: wod, status: NetworkStatus.success));
     } catch (e) {
+      logger.e("${e.toString()}");
       emit(state.copyWith(status: NetworkStatus.error, error: e.toString()));
     }
   }

@@ -193,12 +193,10 @@ class WodCreateScreen extends StatelessWidget {
 
         return Container(
           decoration: BoxDecoration(
-              color: themeData.colorScheme.onTertiaryContainer,
+              color: themeData.colorScheme.background,
               borderRadius: const BorderRadius.all(Radius.circular(8))),
           padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
-          child: Text("Movements",
-              style: themeData.textTheme.bodyLarge
-                  ?.copyWith(color: themeData.colorScheme.onPrimary)),
+          child: Text("Movements", style: themeData.textTheme.bodyLarge),
         );
       },
     );
@@ -213,16 +211,11 @@ class WodCreateScreen extends StatelessWidget {
           runSpacing: 1.0,
           children: state.wod.movements.asMap().entries.map((entry) {
             return InputChip(
-              // padding: const EdgeInsets.all(7),
+              backgroundColor: themeData.colorScheme.background,
               label: Center(child: Text(entry.value)),
               avatar: CircleAvatar(
-                foregroundColor: themeData.colorScheme.onPrimary,
-                backgroundColor: themeData.colorScheme.primary,
-                child: Text(
-                  (entry.key + 1).toString(),
-                  style: themeData.textTheme.labelSmall
-                      ?.copyWith(color: themeData.colorScheme.onPrimary),
-                ),
+                child: Text((entry.key + 1).toString(),
+                    style: themeData.textTheme.labelSmall),
               ),
               onDeleted: () {
                 BlocProvider.of<WodCreateBloc>(context)
@@ -298,12 +291,10 @@ class WodCreateScreen extends StatelessWidget {
 
         return Container(
           decoration: BoxDecoration(
-              color: themeData.colorScheme.onTertiaryContainer,
+              color: themeData.colorScheme.background,
               borderRadius: const BorderRadius.all(Radius.circular(8))),
           padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
-          child: Text("Instructions",
-              style: themeData.textTheme.bodyLarge
-                  ?.copyWith(color: themeData.colorScheme.onPrimary)),
+          child: Text("Instructions", style: themeData.textTheme.bodyLarge),
         );
       },
     );
@@ -321,7 +312,7 @@ class WodCreateScreen extends StatelessWidget {
             BlocProvider.of<WodCreateBloc>(context)
                 .add(TypeInstructions(value));
           },
-          maxLines: 8,
+          maxLines: null,
           decoration: InputDecoration(
             suffixIcon: state.wod.instructions.isNotEmpty
                 ? IconButton(

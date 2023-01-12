@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:way_to_fit/src/presentation/screens/auth_screen.dart';
 
 import 'firebase_options.dart';
 import 'src/injector.dart';
@@ -34,13 +35,14 @@ class MyApp extends StatelessWidget {
             User user = snapshot.data;
             home = const MainScreen();
           } else {
-            home = const MainScreen();
+            home = const AuthScreen();
           }
 
           return MaterialApp(
             home: home,
             theme: ThemeData(
-                colorSchemeSeed: const Color(0xff6750a4),
+                // colorSchemeSeed: const Color(0xFF000000),
+                // colorSchemeSeed: Colors.black,
                 // primarySwatch: primaryBlack,
                 useMaterial3: true,
                 splashFactory: NoSplash.splashFactory),

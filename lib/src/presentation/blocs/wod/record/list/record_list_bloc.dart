@@ -40,6 +40,7 @@ class RecordListBloc extends Bloc<RecordListEvent, RecordListState> {
 
       emit(state.copyWith(records: records, status: NetworkStatus.success));
     } catch (e) {
+      logger.e("${e.toString()}");
       emit(state.copyWith(status: NetworkStatus.error, error: e.toString()));
     }
   }

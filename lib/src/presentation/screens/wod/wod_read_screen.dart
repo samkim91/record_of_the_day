@@ -165,30 +165,14 @@ class WodReadScreen extends StatelessWidget {
 
         return Column(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: themeData.colorScheme.onTertiaryContainer,
-                  borderRadius: const BorderRadius.all(Radius.circular(8))),
-              padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
-              child: Text("Movements",
-                  style: themeData.textTheme.bodyLarge
-                      ?.copyWith(color: themeData.colorScheme.onPrimary)),
-            ),
-            const SizedBox(height: 10),
             Wrap(
               runSpacing: 1.0,
               children: state.wod.movements.asMap().entries.map((entry) {
                 return ActionChip(
-                  // padding: const EdgeInsets.all(7),
                   label: Center(child: Text(entry.value)),
                   avatar: CircleAvatar(
-                    foregroundColor: themeData.colorScheme.onPrimary,
-                    backgroundColor: themeData.colorScheme.primary,
-                    child: Text(
-                      (entry.key + 1).toString(),
-                      style: themeData.textTheme.labelSmall
-                          ?.copyWith(color: themeData.colorScheme.onPrimary),
-                    ),
+                    child: Text((entry.key + 1).toString(),
+                        style: themeData.textTheme.labelSmall),
                   ),
                 );
               }).toList(),
@@ -207,17 +191,16 @@ class WodReadScreen extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-                color: themeData.colorScheme.onTertiaryContainer,
+                color: themeData.colorScheme.background,
                 borderRadius: const BorderRadius.all(Radius.circular(8))),
             padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
-            child: Text("Instructions",
-                style: themeData.textTheme.bodyLarge
-                    ?.copyWith(color: themeData.colorScheme.onPrimary)),
+            child: Text("Instructions", style: themeData.textTheme.bodyLarge),
           ),
           const SizedBox(height: 10),
           TextField(
             controller: TextEditingController(text: state.wod.instructions),
             enabled: false,
+            maxLines: null,
           ),
         ],
       );
@@ -249,12 +232,10 @@ class WodReadScreen extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                  color: themeData.colorScheme.onTertiaryContainer,
+                  color: themeData.colorScheme.background,
                   borderRadius: const BorderRadius.all(Radius.circular(8))),
               padding: const EdgeInsets.fromLTRB(32, 8, 32, 8),
-              child: Text("Records",
-                  style: themeData.textTheme.bodyLarge
-                      ?.copyWith(color: themeData.colorScheme.onPrimary)),
+              child: Text("Records", style: themeData.textTheme.bodyLarge),
             ),
             const SizedBox(height: 10),
             ListView.builder(

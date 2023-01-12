@@ -75,7 +75,8 @@ class AuthScreen extends StatelessWidget {
 
   Widget _googleSection() {
     AuthBloc authBloc = injector.get<AuthBloc>();
-
+    // TODO: 2023/01/12 login 성공하면 그 status 를 받아서 메인 페이지로 이동 시켜야함
+    
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       return SizedBox(
         height: 50,

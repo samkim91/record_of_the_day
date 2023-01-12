@@ -71,6 +71,7 @@ class RecordCreateBloc extends Bloc<RecordCreateEvent, RecordCreateState> {
 
       emit(state.copyWith(status: NetworkStatus.success));
     } catch (e) {
+      logger.e("${e.toString()}");
       emit(state.copyWith(status: NetworkStatus.error, error: e.toString()));
     }
   }

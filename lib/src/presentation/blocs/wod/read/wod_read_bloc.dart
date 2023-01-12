@@ -29,7 +29,7 @@ class WodReadBloc extends Bloc<WodReadEvent, WodReadState> {
 
       emit(state.copyWith(wod: wod, status: NetworkStatus.success));
     } catch (e) {
-      logger.e("_getWod: ${e.toString()}");
+      logger.e("${e.toString()}");
       emit(state.copyWith(status: NetworkStatus.error, error: e.toString()));
     }
   }

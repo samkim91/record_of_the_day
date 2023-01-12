@@ -48,6 +48,7 @@ class WodListBloc extends Bloc<WodListEvent, WodListState> {
 
       emit(state.copyWith(wods: addedWods, status: NetworkStatus.success));
     } catch (e) {
+      logger.e("${e.toString()}");
       emit(state.copyWith(status: NetworkStatus.error, error: e.toString()));
     }
   }
