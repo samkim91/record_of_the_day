@@ -51,7 +51,7 @@ class WodListScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 return WodItemWidget(
                     wod: state.wods[index],
-                    onClickWod: () =>
+                    onClickItem: () =>
                         _onClickWod(context, state.wods[index].id!));
               },
             ),

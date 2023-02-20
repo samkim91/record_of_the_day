@@ -4,9 +4,9 @@ import 'package:way_to_fit/src/domain/entities/participation_type.dart';
 
 class WodItemWidget extends StatelessWidget {
   final Wod wod;
-  final void Function() onClickWod;
+  final void Function() onClickItem;
 
-  const WodItemWidget({Key? key, required this.wod, required this.onClickWod})
+  const WodItemWidget({Key? key, required this.wod, required this.onClickItem})
       : super(key: key);
 
   @override
@@ -14,7 +14,7 @@ class WodItemWidget extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     return GestureDetector(
-      onTap: () => onClickWod(),
+      onTap: () => onClickItem(),
       child: Card(
           margin: const EdgeInsets.fromLTRB(8, 4, 8, 4),
           child: Padding(

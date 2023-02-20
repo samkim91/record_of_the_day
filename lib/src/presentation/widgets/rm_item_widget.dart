@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:way_to_fit/src/data/models/wod.dart';
-import 'package:way_to_fit/src/domain/entities/participation_type.dart';
+import 'package:way_to_fit/src/core/utils/calculator.dart';
+
+import '../../data/models/rm.dart';
 
 class RmItemWidget extends StatelessWidget {
-  final Wod wod;
-  final void Function() onClickWod;
+  final Rm rm;
+  final void Function() onClickItem;
+  final bool isExpanded;
+  final void Function() onClickExpand;
 
-  const RmItemWidget({Key? key, required this.wod, required this.onClickWod})
+  const RmItemWidget(
+      {Key? key,
+      required this.rm,
+      required this.onClickItem,
+      this.isExpanded = false,
+      required this.onClickExpand})
       : super(key: key);
 
   @override
@@ -14,7 +22,7 @@ class RmItemWidget extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
 
     return GestureDetector(
-      onTap: () => onClickWod(),
+      onTap: () => onClickItem(),
       child: Card(
           margin: const EdgeInsets.fromLTRB(8, 4, 8, 4),
           child: Padding(
@@ -23,25 +31,28 @@ class RmItemWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    ActionChip(
-                        label: wod.participationType ==
-                                ParticipationType.individual
-                            ? Text(wod.participationType.text)
-                            : Text(
-                                "${wod.participationType.text} of ${wod.memberCount}")),
-                    const SizedBox(width: 10),
-                    Text("${wod.type.text} ${wod.typeDetail}",
+                    Text(rm.type.text, style: themeData.textTheme.titleLarge),
+                    Text("${rm.result}",
                         style: themeData.textTheme.titleMedium),
+                    IconButton(
+                      icon: Icon(isExpanded
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down),
+                      onPressed: () => onClickExpand(),
+                    )
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: wod.movements
-                      .map((e) =>
-                          Text("- $e", style: themeData.textTheme.bodyLarge))
-                      .toList(),
-                ),
+                Visibility(
+                  visible: isExpanded,
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    children: calculatePercent(rm.result)
+                        .map((e) => Text(e.toString()))
+                        .toList(),
+                  ),
+                )
               ],
             ),
           )),
