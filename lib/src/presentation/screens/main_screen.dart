@@ -4,7 +4,7 @@ import 'package:way_to_fit/src/injector.dart';
 import 'package:way_to_fit/src/presentation/blocs/navigation/navigation_cubit.dart';
 import 'package:way_to_fit/src/presentation/screens/navigation.dart';
 import 'package:way_to_fit/src/presentation/screens/profile/profile_screen.dart';
-import 'package:way_to_fit/src/presentation/screens/rm/rm_screen.dart';
+import 'package:way_to_fit/src/presentation/screens/rm/rm_list_screen.dart';
 import 'package:way_to_fit/src/presentation/screens/wod/wod_create_screen.dart';
 import 'package:way_to_fit/src/presentation/screens/wod/wod_list_screen.dart';
 
@@ -28,7 +28,7 @@ class MainScreen extends StatelessWidget {
       if (state.navigationBarItem == NavigationBarItem.wod) {
         return WodListScreen(scrollController: ScrollController());
       } else if (state.navigationBarItem == NavigationBarItem.rm) {
-        return const RmScreen();
+        return const RmListScreen();
       } else if (state.navigationBarItem == NavigationBarItem.profile) {
         return const ProfileScreen();
       }

@@ -29,7 +29,8 @@ class WodRepositoryImpl implements WodRepository {
       return wod;
     } else {
       logger.e("readWod: Not found");
-      throw NullThrownError();
+
+      throw Exception("Not found");
     }
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-class RmScreen extends StatelessWidget {
-  const RmScreen({Key? key}) : super(key: key);
+class RmListScreen extends StatelessWidget {
+  const RmListScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
